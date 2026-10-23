@@ -30,6 +30,11 @@ jobs:
           python3 - <<'PY'
           import zipfile, pathlib, re, hashlib, json
           p = pathlib.Path('../chaoxing-agent-0.2.8.zip')
+          with zipfile.ZipFile(p) as src:
+              files = { 'chaoxing-agent/' + n.split('/', 1)[1]: src.read(n) for n in src.namelist() }
+          with zipfile.ZipFile(p, 'w', compression=zipfile.ZIP_DEFLATED) as dst:
+              for n, b in files.items():
+                  dst.writestr(n, b)
           with zipfile.ZipFile(p, 'a', compression=zipfile.ZIP_DEFLATED) as z:
               z.write('LICENSE', 'chaoxing-agent/LICENSE')
           with zipfile.ZipFile(p) as z:
@@ -72,11 +77,3 @@ jobs:
             exit 1
           fi
           gh release create v0.2.8 ../chaoxing-agent-0.2.8.zip ../SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --target b726a42be1d96c42b66f5a2291763318b43efcdd --title "v0.2.8 · 学习通本地 Agent" --notes-file /tmp/release-notes.md
-      - name: Remove one-time workflow
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          path=".github/workflows/release-v028-once.yml"
-          sha="$(gh api "repos/$GITHUB_REPOSITORY/contents/$path?ref=main" --jq .sha)"
-          gh api --method DELETE "repos/$GITHUB_REPOSITORY/contents/$path" -f message="Remove one-time v0.2.8 publisher after execution" -f sha="$sha" -f branch=main

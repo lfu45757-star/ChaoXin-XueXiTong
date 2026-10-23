@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-20T07:38:32.255Z",
+  "passed": 4,
+  "source": "https://mooc1.chaoxing.com/mooc-ans/mooc2/js/editor/ueditor.all.min.js?v=2026-0921-1215",
+  "sha256": "6d94b4efd20950b7808f0b445fdc00c95e00ca95db501694850f77c84efba97e",
+  "results": [
+    "Exact official codeTool.show reproduces null.getAttribute for bare PRE; actual default/old/new code filters and getContent are registered",
+    "Safe PRE>CODE fixes exact official toolbar method and preserves six-line Python, internal blank lines, tabs/indentation through two actual getContent saves",
+    "Answer HTML remains literal after official saves/reload; hidden textarea retains original raw code",
+    "Official parser boundary-blank-line normalization is explicit; raw textarea stays exact, internal code line breaks are preserved"
+  ],
+  "skipped": [],
+  "scope": "Fully intercepted disposable browser, exact official parser + default/code-plugin rules + toolbar show; UI lifecycle/ajax submission not exercised."
+}

@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-23T04:03:22.426Z",
+  "passed": 3,
+  "results": [
+    "Control message starts within 2s without polling; repeated controls do not duplicate solving; each verified question report matches its actual DOM state and has a visible Agent label",
+    "Stopping after the first verified question prevents later answers and avoids storing an incomplete batch as filled",
+    "An invalid later answer fails whole-batch preflight before any question is changed"
+  ],
+  "scope": "Fully intercepted disposable browser, actual adapter/content and native radio DOM, simulated extension transport and model answers, no real course submission",
+  "sourceSha256": {
+    "adapter": "070cbec6d28560bf5dab1a39de07f956b72c447f52e22f618f731e5f125d3645",
+    "content": "a0ae6dedf13b4dba19d1dd757652d1eddc9295a77b6240146f53be608e00a8a1"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-23T14:26:40.327Z",
+  "passed": 6,
+  "results": [
+    {
+      "scenario": "continue",
+      "passed": true,
+      "footerClicks": 1,
+      "confirmClicks": 1,
+      "status": "正在确认进入下一节；已跳过的任务仍保留未完成标记",
+      "url": "https://mooc1.chaoxing.com/knowledge/cards?knowledgeid=fixture&next=1",
+      "done": 0
+    },
+    {
+      "scenario": "new-task",
+      "passed": true,
+      "footerClicks": 1,
+      "confirmClicks": 0,
+      "status": "平台提示仍有未完成任务，当前条件不允许自动跳过，请检查任务状态",
+      "url": "https://mooc1.chaoxing.com/knowledge/cards?knowledgeid=fixture",
+      "done": 0
+    },
+    {
+      "scenario": "busy",
+      "passed": true,
+      "footerClicks": 1,
+      "confirmClicks": 0,
+      "status": "平台提示仍有未完成任务，当前条件不允许自动跳过，请检查任务状态",
+      "url": "https://mooc1.chaoxing.com/knowledge/cards?knowledgeid=fixture",
+      "done": 0
+    },
+    {
+      "scenario": "stop",
+      "passed": true,
+      "footerClicks": 1,
+      "confirmClicks": 0,
+      "status": "讨论已处理或跳过，平台未完成标记保留；正在进入下一任务",
+      "url": "https://mooc1.chaoxing.com/knowledge/cards?knowledgeid=fixture",
+      "done": 0
+    },
+    {
+      "scenario": "unrelated-dialog",
+      "passed": true,
+      "footerClicks": 1,
+      "confirmClicks": 0,
+      "status": "下一任务点击后页面未变化，请手动选择章节",
+      "url": "https://mooc1.chaoxing.com/knowledge/cards?knowledgeid=fixture",
+      "done": 0
+    },
+    {
+      "scenario": "unchanged",
+      "passed": true,
+      "footerClicks": 1,
+      "confirmClicks": 1,
+      "status": "已确认下一节但页面未切换，请检查网站响应",
+      "url": "https://mooc1.chaoxing.com/knowledge/cards?knowledgeid=fixture",
+      "done": 0
+    }
+  ],
+  "sourceSha256": {
+    "adapter.js": "3d2cb2e82fe4edeec2c38e628cfb82d1dc71bcb75a979c9d04de384cd6f3aca3",
+    "discussion.js": "223801afd0bb119861bdbd7e79a62656bed6821d8df8f5285ef348be0674dee9",
+    "content.js": "cf701ce04b58bbaa164d7716e4ce111e037120b02db932770922668c3797f362"
+  },
+  "scope": "Actual adapter/discussion/content with real DOM click handlers and reconstructed native HTML dialog. Intercepted browser, simulated storage/transport, no real course progression."
+}

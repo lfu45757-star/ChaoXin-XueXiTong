@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-21T00:06:11.879Z",
+  "passed": 13,
+  "results": [
+    "课程/当前章节显式可见标题可保守识别全部语言枚举；冲突、隐藏标题、任意侧栏/题目文字不推断语言",
+    "嵌套同源任务frame读取祖先标题，跨源top访问被浏览器拒绝时保持空上下文/auto",
+    "UEditor式隐藏textarea+可见编辑区+iframe body保留Python换行/缩进；安全pre文本可序列化回放，答案HTML仅显示为文字",
+    "真实CDP ISOLATED world适配器可跨同源iframe写入安全DOM并验证代码实际显示",
+    "原生textarea内容原样保存；主textarea正确但富文本镜像折叠空白或未接受答案时拒绝成功",
+    "无语言题solve消息携带课程/章节与Python上下文；frame report.quizKey使用实际存储fingerprint",
+    "旧filled缺context重新解题；显式语言C/Python变化重新solve并替换答案但fingerprint不变，相同context不重复solve",
+    "完全一致的解题context允许复用filled答案并仅一次正常提交",
+    "filled缓存进入刷新后的空文档会实际填写；关闭自动提交时后续轮询保留人工修改",
+    "解题期间改变显式语言时丢弃迟到结果，不填写/缓存旧答案；下一轮按新设置重解但key不变",
+    "后台返回实际effective context时按最新设置核对并记录该context，避免把新语言答案错误缓存为旧语言",
+    "uncertain仍报告同一quizKey；改课程上下文不绕过检查，停止后busy=false仍保留key，无求解/填写/重复提交",
+    "实际提交等待循环报告原quizKey和busy=true；停止后busy=false且保留submitting意图，不再写入/再次点击"
+  ],
+  "scope": "Intercepted disposable fixtures; UEditor DOM/HTML save shape simulated, not a real course submission."
+}

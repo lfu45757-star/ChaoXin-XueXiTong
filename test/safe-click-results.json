@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-21T00:05:37.394Z",
+  "passed": 6,
+  "results": [
+    {
+      "check": "Real restrictive page CSP blocks the baseline JavaScript URL default; noop helper dispatches each handler once, restores exact href, and produces no page CSP violation, including nested SVG",
+      "baseline": [
+        {
+          "directive": "script-src-elem",
+          "uri": "inline"
+        }
+      ]
+    },
+    {
+      "check": "Functional/unknown JavaScript URLs, including URL-parser control-character schemes, are refused before any handler and retain attributes"
+    },
+    {
+      "check": "Ordinary URL/button dispatch remains normal; SVG xlink noops restore, finally restores on thrown dispatch and preserves handler-written replacement href"
+    },
+    {
+      "check": "All planned option clicks preflight before any question is changed; later unsupported href leaves earlier native radio unselected"
+    },
+    {
+      "check": "Content preflights submit before remember(submitting): functional href causes no submit handler, submitting record, or uncertain record"
+    },
+    {
+      "check": "Content normal noop submit + workpop confirm runs each existing handler once, records successful receipt, and restores both href attributes"
+    }
+  ],
+  "scope": "Fully intercepted disposable pages, real document CSP and main-world adapter/transport simulation; no real extension CSP, live course actions, or model calls. Removing a noop href can affect href-dependent site selectors; no transparency claim for arbitrary handlers."
+}

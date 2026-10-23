@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-22T17:46:04.402Z",
+  "scope": "Disposable headless browser, fully intercepted URLs, real layout/scroll/image loading; actual content and helper with mocked extension transport; no real courses",
+  "passed": 9,
+  "checks": [
+    "短文档末页可见后继续滚到阅读器页后留白/页脚的实际底部",
+    "嵌套阅读容器与文档root均滚到底，不滚动无关侧边栏",
+    "滚动触发异步增高后重新滚底，布局稳定后才返回成功",
+    "等待末页延迟图片真实加载和自然尺寸变化后滚到底",
+    "无滚动空间的短文档可正常稳定，不陷入重试",
+    "持续布局变化受时间预算限制，不将不稳定文档记为已浏览",
+    "实际content脚本仅在阅读器实际到底并稳定后调用一次原站点完成桥接",
+    "底部稳定等待中停止托管立即取消，不调用完成回调",
+    "底部稳定等待中切换章节或移除文档时取消旧浏览，不调用完成回调"
+  ],
+  "errors": []
+}

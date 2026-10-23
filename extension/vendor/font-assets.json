@@ -1,0 +1,32 @@
+{
+  "extraction": "Babel AST literal extraction; no third-party extension logic executed",
+  "table": {
+    "source": "../extension-research/daxuesoutijiang-edge/SideBar.d70b0916.js",
+    "sourceSha256": "5891934415c65e6c0ae31c2ae56d51b54741d2a406c52d9f3976c10927d42161",
+    "module": "3ErB5",
+    "start": 6442998,
+    "end": 6782236,
+    "offsets": "zero-based UTF-16 offsets, end exclusive",
+    "entries": 20902,
+    "metadata": {
+      "author": "wyn665817",
+      "namespace": "wyn665817@163.com",
+      "license": "MIT",
+      "version": "20220515.1"
+    },
+    "dataSha256": "3ce036e6194f686ea54b0e8206568724140b5055950cd6ac62365f5ae5d24e6c",
+    "shippedSha256": "4f7d38ac71641e2c05bd74349a7dae9c58bb42d72931aebfc007ffaba082c6c8"
+  },
+  "library": {
+    "source": "../extension-research/daxuesoutijiang-edge/lib/TyprMd5.js",
+    "shippedFile": "typr-md5.js",
+    "sha256": "04c4a84aacb9da4df12ba40b9d4ad515bafe6d30e4627438636edb670b755795",
+    "unchanged": true,
+    "upstream": [
+      "https://github.com/photopea/Typr.js/blob/15aa12ffa6cf39e8788562ea4af65b42317375fb/src/Typr.min.js",
+      "https://github.com/photopea/Typr.js/blob/f4fcdeb8014edc75ab7296bd85ac9cde8cb30489/src/Typr.U.min.js",
+      "https://github.com/blueimp/JavaScript-MD5/blob/v2.19.0/js/md5.min.js"
+    ],
+    "usage": "Only parse, codeToGlyph, glyphToPath, and MD5. initHB is never called."
+  }
+}

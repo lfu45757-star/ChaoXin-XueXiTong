@@ -1,0 +1,3024 @@
+{
+  "at": "2026-10-23T11:14:55.184Z",
+  "browser": "155.0.8059.86",
+  "passed": 20,
+  "total": 20,
+  "scope": "Fully intercepted disposable browser; actual adapter/content with simulated runtime/storage and the background 12s report TTL; no real courses, model calls or submissions",
+  "sourceSha256": {
+    "adapter": "3d2cb2e82fe4edeec2c38e628cfb82d1dc71bcb75a979c9d04de384cd6f3aca3",
+    "content": "cf701ce04b58bbaa164d7716e4ce111e037120b02db932770922668c3797f362",
+    "discussion": "223801afd0bb119861bdbd7e79a62656bed6821d8df8f5285ef348be0674dee9"
+  },
+  "results": [
+    {
+      "name": "hidden pending marker and no work-child report block chapter navigation",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 0,
+            "status": "等待平台任务完成标记（1/2）",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093996,
+            "ageMs": 1007
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093967,
+            "ageMs": 1036
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 0,
+            "status": "等待平台任务完成标记（1/2）",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093996
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093967
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          },
+          {
+            "hiddenParent": true,
+            "ownAttachDone": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "expired blocked work report never turns a hidden pending task into completion",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 92,
+            "mode": "blocked",
+            "busy": false,
+            "status": "unknown submission",
+            "url": "https://mooc1.chaoxing.com/work/pending",
+            "quizKey": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "jobTotal": 0,
+            "jobDone": 0,
+            "ageMs": 16192,
+            "at": 1792754078811
+          },
+          {
+            "frameId": 0,
+            "status": "等待平台任务完成标记（1/2）",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093996,
+            "ageMs": 1007
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093953,
+            "ageMs": 1050
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 0,
+            "status": "等待平台任务完成标记（1/2）",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093996
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093953
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          },
+          {
+            "hiddenParent": true,
+            "ownAttachDone": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "loading native cards with a visible old completion marker do not advance",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 0,
+            "status": "章节任务状态尚未就绪，等待内容加载",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093935,
+            "ageMs": 1021
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093906,
+            "ageMs": 1050
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 0,
+            "status": "章节任务状态尚未就绪，等待内容加载",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093935
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093906
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing native-cards report is not replaced by another completed work report",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 91,
+            "mode": "complete",
+            "busy": false,
+            "status": "old work complete",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?knowledgeid=previous-chapter&workAnswerId=old-answer",
+            "jobTotal": 1,
+            "jobDone": 1,
+            "trackedJobTotal": 1,
+            "submissionConfirmed": true,
+            "at": 1792754083690,
+            "ageMs": 11143
+          },
+          {
+            "frameId": 0,
+            "status": "章节任务状态尚未就绪，等待内容加载",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093826,
+            "ageMs": 1007
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 91,
+            "mode": "complete",
+            "busy": false,
+            "status": "old work complete",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?knowledgeid=previous-chapter&workAnswerId=old-answer",
+            "jobTotal": 1,
+            "jobDone": 1,
+            "trackedJobTotal": 1,
+            "submissionConfirmed": true,
+            "at": 1792754083690
+          },
+          {
+            "frameId": 0,
+            "status": "章节任务状态尚未就绪，等待内容加载",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093826
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "about:blank main iframe cannot reuse an earlier completed cards report",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [],
+        "mainFrameSrc": "about:blank",
+        "reports": [
+          {
+            "frameId": 91,
+            "mode": "complete",
+            "busy": false,
+            "status": "old work complete",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "jobTotal": 1,
+            "jobDone": 1,
+            "trackedJobTotal": 1,
+            "submissionConfirmed": true,
+            "at": 1792754083519,
+            "ageMs": 11189
+          },
+          {
+            "frameId": 0,
+            "status": "章节内容尚未加载，等待任务状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"about:blank\",\"card\":\"\"}",
+            "at": 1792754093702,
+            "ageMs": 1006
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 91,
+            "mode": "complete",
+            "busy": false,
+            "status": "old work complete",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "jobTotal": 1,
+            "jobDone": 1,
+            "trackedJobTotal": 1,
+            "submissionConfirmed": true,
+            "at": 1792754083519
+          },
+          {
+            "frameId": 0,
+            "status": "章节内容尚未加载，等待任务状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"about:blank\",\"card\":\"\"}",
+            "at": 1792754093702
+          }
+        ],
+        "liveMarkerSnapshot": []
+      }
+    },
+    {
+      "name": "loaded fresh native cards with all tasks complete advance exactly once",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754092947,
+            "ageMs": 6
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 2,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754092910,
+            "ageMs": 43
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754092947
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 2,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754092910
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          },
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "all completed native markers override stale active media and nested job counts",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 82,
+            "mode": "media",
+            "busy": true,
+            "status": "old video still playing",
+            "url": "https://mooc1.chaoxing.com/ananas/modules/video/index.html?old=1",
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083692,
+            "ageMs": 9261
+          },
+          {
+            "frameId": 83,
+            "mode": "page",
+            "busy": false,
+            "status": "waiting for task point",
+            "url": "https://mooc1.chaoxing.com/ananas/modules/video/index.html?old=2",
+            "jobTotal": 1,
+            "jobDone": 0,
+            "at": 1792754083692,
+            "ageMs": 9261
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754092947,
+            "ageMs": 6
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 2,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754092914,
+            "ageMs": 39
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 82,
+            "mode": "media",
+            "busy": true,
+            "status": "old video still playing",
+            "url": "https://mooc1.chaoxing.com/ananas/modules/video/index.html?old=1",
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083692
+          },
+          {
+            "frameId": 83,
+            "mode": "page",
+            "busy": false,
+            "status": "waiting for task point",
+            "url": "https://mooc1.chaoxing.com/ananas/modules/video/index.html?old=2",
+            "jobTotal": 1,
+            "jobDone": 0,
+            "at": 1792754083692
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754092947
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 2,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754092914
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          },
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "completed native work marker advances despite review page lacking receipt",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093017,
+            "ageMs": 30
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091494,
+            "ageMs": 1553
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093017
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091494
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "completed work marker is checked before solving its still-visible question",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093145,
+            "ageMs": 95
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091549,
+            "ageMs": 1691
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093110,
+            "ageMs": 130
+          },
+          {
+            "frameId": 3,
+            "status": "平台任务点已完成，跳过解题并继续",
+            "mode": "complete",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091586,
+            "ageMs": 1654
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093145
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091549
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093110
+          },
+          {
+            "frameId": 3,
+            "status": "平台任务点已完成，跳过解题并继续",
+            "mode": "complete",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091586
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "cross-origin completed work marker is checked before solving its still-visible question",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093145,
+            "ageMs": 95
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc2.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093238,
+            "ageMs": 2
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093110,
+            "ageMs": 130
+          },
+          {
+            "frameId": 3,
+            "status": "平台任务点已完成，跳过解题并继续",
+            "mode": "complete",
+            "busy": false,
+            "url": "https://mooc2.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&courseid=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091586,
+            "ageMs": 1654
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093145
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc2.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093238
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093110
+          },
+          {
+            "frameId": 3,
+            "status": "平台任务点已完成，跳过解题并继续",
+            "mode": "complete",
+            "busy": false,
+            "url": "https://mooc2.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&courseid=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091586
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "another completed marker cannot suppress an unfinished work question",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 0,
+        "solverCalls": 1,
+        "events": [
+          {
+            "type": "blocked",
+            "detail": "page.evaluate: Error: Navigation fixture must never solve or submit a quiz\n    at window.fixtureSend (eval at evaluate (:290:30), <anonymous>:10:62)\n    at eval (eval at evaluate (:290:30), <anonymous>:1:27)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": false
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093999,
+            "ageMs": 1110
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754094046,
+            "ageMs": 1063
+          },
+          {
+            "frameId": 0,
+            "status": "page.evaluate: Error: Navigation fixture must never solve or submit a quiz\n    at window.fixtureSend (eval at evaluate (:290:30), <anonymous>:10:62)\n    at eval (eval at evaluate (:290:30), <anonymous>:1:27)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754094091,
+            "ageMs": 1018
+          },
+          {
+            "frameId": 3,
+            "status": "page.evaluate: Error: Navigation fixture must never solve or submit a quiz\n    at window.fixtureSend (eval at evaluate (:290:30), <anonymous>:10:62)\n    at eval (eval at evaluate (:290:30), <anonymous>:1:27)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+            "mode": "quiz",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "quizKey": "6cbc1d02bfa67a2476a45f4b523764e7f062e41ea2255f34711e1787e4b18aef",
+            "progress": {
+              "kind": "quiz",
+              "phase": "solving",
+              "current": 0,
+              "total": 1,
+              "filled": 0
+            },
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754094077,
+            "ageMs": 1032
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": false
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093999
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754094046
+          },
+          {
+            "frameId": 0,
+            "status": "page.evaluate: Error: Navigation fixture must never solve or submit a quiz\n    at window.fixtureSend (eval at evaluate (:290:30), <anonymous>:10:62)\n    at eval (eval at evaluate (:290:30), <anonymous>:1:27)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754094091
+          },
+          {
+            "frameId": 3,
+            "status": "page.evaluate: Error: Navigation fixture must never solve or submit a quiz\n    at window.fixtureSend (eval at evaluate (:290:30), <anonymous>:10:62)\n    at eval (eval at evaluate (:290:30), <anonymous>:1:27)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+            "mode": "quiz",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "quizKey": "6cbc1d02bfa67a2476a45f4b523764e7f062e41ea2255f34711e1787e4b18aef",
+            "progress": {
+              "kind": "quiz",
+              "phase": "solving",
+              "current": 0,
+              "total": 1,
+              "filled": 0
+            },
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754094077
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          },
+          {
+            "hiddenParent": false,
+            "ownAttachDone": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "completed native work marker overrides a stale blocked child report",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 93,
+            "mode": "blocked",
+            "busy": false,
+            "quizKey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906,
+            "ageMs": 9142
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093022,
+            "ageMs": 26
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091500,
+            "ageMs": 1548
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 93,
+            "mode": "blocked",
+            "busy": false,
+            "quizKey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093022
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091500
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "unanswerable work advances while its own task marker stays pending",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 92,
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906,
+            "ageMs": 9142
+          },
+          {
+            "frameId": 93,
+            "mode": "skipped",
+            "busy": false,
+            "skipReason": "no-valid-answer",
+            "quizKey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906,
+            "ageMs": 9142
+          },
+          {
+            "frameId": 0,
+            "status": "无法作答的练习已跳过，平台未完成标记保留；正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093030,
+            "ageMs": 18
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": false
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091506,
+            "ageMs": 1542
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 92,
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906
+          },
+          {
+            "frameId": 93,
+            "mode": "skipped",
+            "busy": false,
+            "skipReason": "no-valid-answer",
+            "quizKey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906
+          },
+          {
+            "frameId": 0,
+            "status": "无法作答的练习已跳过，平台未完成标记保留；正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093030
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": false
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091506
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          },
+          {
+            "hiddenParent": false,
+            "ownAttachDone": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "skipped work never hides an unrelated pending task",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 92,
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906,
+            "ageMs": 11174
+          },
+          {
+            "frameId": 93,
+            "mode": "skipped",
+            "busy": false,
+            "skipReason": "no-valid-answer",
+            "quizKey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906,
+            "ageMs": 11174
+          },
+          {
+            "frameId": 0,
+            "status": "等待平台任务完成标记（1/3）",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754094027,
+            "ageMs": 1053
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 3,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 3,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": false
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093999,
+            "ageMs": 1081
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 92,
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906
+          },
+          {
+            "frameId": 93,
+            "mode": "skipped",
+            "busy": false,
+            "skipReason": "no-valid-answer",
+            "quizKey": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "jobTotal": 0,
+            "jobDone": 0,
+            "at": 1792754083906
+          },
+          {
+            "frameId": 0,
+            "status": "等待平台任务完成标记（1/3）",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754094027
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 3,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 3,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": false
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093999
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          },
+          {
+            "hiddenParent": false,
+            "ownAttachDone": false
+          },
+          {
+            "hiddenParent": true,
+            "ownAttachDone": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "completed cards markers plus a fresh successful actual work document advance once",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093145,
+            "ageMs": 95
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091548,
+            "ageMs": 1692
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093097,
+            "ageMs": 143
+          },
+          {
+            "frameId": 3,
+            "status": "平台任务点已完成，跳过解题并继续",
+            "mode": "complete",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": true,
+            "untrackedTextViewed": false,
+            "at": 1792754091586,
+            "ageMs": 1654
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093145
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc1.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091548
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093097
+          },
+          {
+            "frameId": 3,
+            "status": "平台任务点已完成，跳过解题并继续",
+            "mode": "complete",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": true,
+            "untrackedTextViewed": false,
+            "at": 1792754091586
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "cross-origin work receipt without knowledgeid is bound through actual parent iframe URLs",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093144,
+            "ageMs": 95
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc2.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?workAnswerId=fixture-answer&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091549,
+            "ageMs": 1690
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093095,
+            "ageMs": 144
+          },
+          {
+            "frameId": 3,
+            "status": "平台任务点已完成，跳过解题并继续",
+            "mode": "complete",
+            "busy": false,
+            "url": "https://mooc2.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?workAnswerId=fixture-answer&courseid=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": true,
+            "untrackedTextViewed": false,
+            "at": 1792754091577,
+            "ageMs": 1662
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 1,
+            "workFrameUrls": [
+              "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture"
+            ],
+            "workFrameJobs": [
+              {
+                "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+                "hasMarker": true,
+                "done": true
+              }
+            ],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754093144
+          },
+          {
+            "frameId": 2,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/ananas/modules/work/index.html?workId=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [
+              "https://mooc2.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?workAnswerId=fixture-answer&courseid=fixture"
+            ],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091549
+          },
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093095
+          },
+          {
+            "frameId": 3,
+            "status": "平台任务点已完成，跳过解题并继续",
+            "mode": "complete",
+            "busy": false,
+            "url": "https://mooc2.chaoxing.com/mooc-ans/work/selectWorkQuestionYiPiYue?workAnswerId=fixture-answer&courseid=fixture",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": true,
+            "untrackedTextViewed": false,
+            "at": 1792754091577
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "completed selected card advances inside tabs while a different card remains pending",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 1,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "练习"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"0::文档\"}",
+            "at": 1792754092960,
+            "ageMs": 78
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754092921,
+            "ageMs": 117
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 0,
+            "status": "任务已完成，正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"0::文档\"}",
+            "at": 1792754092960
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 1,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754092921
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "same-chapter report from another card cannot satisfy the current cards URL",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 94,
+            "mode": "page",
+            "cardsReady": true,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter&num=1",
+            "jobTotal": 1,
+            "jobDone": 1,
+            "trackedJobTotal": 1,
+            "at": 1792754083698,
+            "ageMs": 11135
+          },
+          {
+            "frameId": 0,
+            "status": "章节任务状态尚未就绪，等待内容加载",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093826,
+            "ageMs": 1007
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 94,
+            "mode": "page",
+            "cardsReady": true,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter&num=1",
+            "jobTotal": 1,
+            "jobDone": 1,
+            "trackedJobTotal": 1,
+            "at": 1792754083698
+          },
+          {
+            "frameId": 0,
+            "status": "章节任务状态尚未就绪，等待内容加载",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093826
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "explicitly skipped discussion continues to next chapter with original pending marker intact",
+      "passed": true,
+      "expectedClicks": 1,
+      "observation": {
+        "nextClicks": 1,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [
+          {
+            "type": "next",
+            "detail": "下一节"
+          }
+        ],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 0,
+            "status": "讨论已处理或跳过，平台未完成标记保留；正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093059,
+            "ageMs": 86
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 0,
+            "skippedJobTotal": 1,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091532,
+            "ageMs": 1613
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 0,
+            "status": "讨论已处理或跳过，平台未完成标记保留；正在进入下一任务",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754093059
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 1,
+            "jobDone": 0,
+            "skippedJobTotal": 1,
+            "trackedJobTotal": 1,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754091532
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "skipped discussion never hides an unfinished different task",
+      "passed": true,
+      "expectedClicks": 0,
+      "observation": {
+        "nextClicks": 0,
+        "cardClicks": 0,
+        "solverCalls": 0,
+        "events": [],
+        "mainFrameSrc": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+        "reports": [
+          {
+            "frameId": 0,
+            "status": "等待平台任务完成标记（0/2）",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754094059,
+            "ageMs": 1023
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 0,
+            "skippedJobTotal": 1,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754094046,
+            "ageMs": 1036
+          }
+        ],
+        "liveReports": [
+          {
+            "frameId": 0,
+            "status": "等待平台任务完成标记（0/2）",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 0,
+            "jobDone": 0,
+            "skippedJobTotal": 0,
+            "trackedJobTotal": 0,
+            "cardsReady": false,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "route": "{\"href\":\"https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixture&chapterId=fixture-chapter\",\"mainFrame\":\"https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter\",\"card\":\"\"}",
+            "at": 1792754094059
+          },
+          {
+            "frameId": 1,
+            "status": "等待任务点状态",
+            "mode": "page",
+            "busy": false,
+            "url": "https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture&knowledgeid=fixture-chapter",
+            "quizKey": "",
+            "progress": null,
+            "jobTotal": 2,
+            "jobDone": 0,
+            "skippedJobTotal": 1,
+            "trackedJobTotal": 2,
+            "cardsReady": true,
+            "workFrameCount": 0,
+            "workFrameUrls": [],
+            "workFrameJobs": [],
+            "childFrameUrls": [],
+            "submissionConfirmed": false,
+            "untrackedTextViewed": false,
+            "at": 1792754094046
+          }
+        ],
+        "liveMarkerSnapshot": [
+          {
+            "hiddenParent": false,
+            "ownAttachDone": false
+          },
+          {
+            "hiddenParent": true,
+            "ownAttachDone": false
+          }
+        ]
+      }
+    }
+  ]
+}

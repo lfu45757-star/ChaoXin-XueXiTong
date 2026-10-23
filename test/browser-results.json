@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-23T04:03:20.301Z",
+  "browser": "155.0.8059.86",
+  "scope": "isolated local browser fixtures; simulated extension transport and agent; no live Chaoxing submissions",
+  "checks": [
+    "实际超星类名 singleQuesId / answertype / before-after / check_answer 的提取与选中校验",
+    "多选题清除旧选项并校验新选项",
+    "富文本填空的隐藏 textarea 与可见编辑区同步",
+    "仅平台 ans-job-finished 标记确认任务完成",
+    "完整内容脚本：agent 答案→填写→只提交一次→确认→等待平台标记→下一章节",
+    "地址栏不变的 iframe 章节切换不误判失败，且只跳转一次",
+    "低置信度答案不会填写或提交",
+    "停止后拒绝迟到的 agent 答案",
+    "父页面提交确认弹窗与子 frame 平台完成状态汇总",
+    "前一child blocked不遮蔽后续busy/submitting及真实workpop确认；top完成标记不能覆盖未完成child，全部完成后才跳转",
+    "unknown/uncertain提交checkpoint保持暂停，不调用solver、不重新填写或重复提交",
+    "文档默认快速滚到末尾，缺少平台完成标记时不会跳转",
+    "稳定加载的无任务点文字 cards 子页面经过浏览后，由父页面正常下一节入口跳转且只跳转一次",
+    "空白/加载中的 cards 或包含任务 iframe 的章节不会被认定为无任务点文字阅读",
+    "恢复已提交 checkpoint 的子题目不占用执行状态，仍等待父页面平台完成标记后再跳转"
+  ]
+}

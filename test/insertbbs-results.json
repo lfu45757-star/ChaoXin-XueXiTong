@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-23T03:57:46.867Z",
+  "passed": 8,
+  "checks": [
+    "三层 insertbbs→bbscircle 结构中，相同外层 URL 的三个题目按各自 mtopicid 顺序处理，其他作业不跳过",
+    "题目身份不依赖签名或时间参数，等待子页期间不会再次打开同题",
+    "仅读取 topicMainDiv 的普通 data URL，不执行内联 onclick 或任意脚本文本",
+    "cards、模块与预览框架使用一致题目身份，后台可跨 frame 去重",
+    "其他讨论任务已完成不会阻止当前未完成讨论的进入",
+    "平台已完成的所属讨论在模块/内层预览均不再打开或生成回复",
+    "无效/脚本 data 地址拒绝打开，三个题目分别跳过且保留平台标记",
+    "内层预览无法读取时用当前章节和附件序号区分任务，三个同址外框不会互相覆盖"
+  ],
+  "errors": [],
+  "sourceSha256": {
+    "adapter": "070cbec6d28560bf5dab1a39de07f956b72c447f52e22f618f731e5f125d3645",
+    "discussion": "01a9a442952e2d33b6ded82ff5360aac06386e3a8ed5238d3681117b8e365ed7"
+  },
+  "scope": "Observed user template reproduced with three real nested same-origin iframe trees, intercepted pages and simulated extension transport. Destination data URL shape comes from shipped extension source; live values and real course publication not verified."
+}

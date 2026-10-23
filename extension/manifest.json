@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "学习通本地 Agent",
+  "version": "0.2.8",
+  "description": "本地 agent 驱动的章节任务托管、练习填写、提交确认和下一任务跳转。",
+  "permissions": ["storage", "alarms", "power"],
+  "host_permissions": ["https://*.chaoxing.com/*", "https://*.xuexitong.com/*", "http://127.0.0.1:18765/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_popup": "popup.html", "default_title": "学习通本地 Agent" },
+  "content_scripts": [{
+    "matches": ["https://*.chaoxing.com/*", "https://*.xuexitong.com/*"],
+    "all_frames": true,
+    "match_about_blank": true,
+    "js": ["vendor/typr-md5.js", "vendor/cx-glyph-map.js", "font-decoder.js", "document-bridge.js", "document-scroll.js", "adapter.js", "status-text.js", "discussion.js", "content.js"],
+    "run_at": "document_idle"
+  }, {
+    "matches": ["https://*.chaoxing.com/ananas/modules/pdf/*", "https://*.xuexitong.com/ananas/modules/pdf/*"],
+    "all_frames": true,
+    "js": ["pdf-bridge.js"],
+    "run_at": "document_start",
+    "world": "MAIN"
+  }]
+}

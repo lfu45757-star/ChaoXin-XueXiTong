@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-23T04:03:20.301Z",
+  "at": "2026-10-24T13:32:16.859Z",
   "browser": "155.0.8059.86",
   "scope": "isolated local browser fixtures; simulated extension transport and agent; no live Chaoxing submissions",
   "checks": [
@@ -12,8 +12,11 @@
     "低置信度答案不会填写或提交",
     "停止后拒绝迟到的 agent 答案",
     "父页面提交确认弹窗与子 frame 平台完成状态汇总",
+    "studentstudy 的标题、提示文字与确认按钮为兄弟节点时仅确认提交；旧提交意图可完成仍打开的弹窗且不重复点击",
     "前一child blocked不遮蔽后续busy/submitting及真实workpop确认；top完成标记不能覆盖未完成child，全部完成后才跳转",
     "unknown/uncertain提交checkpoint保持暂停，不调用solver、不重新填写或重复提交",
+    "刷新后的平台明确待完成且旧记录超过两分钟时，只用已核对答案恢复提交一次",
+    "一次恢复仍未确认时保持暂停，防止无限重试",
     "文档默认快速滚到末尾，缺少平台完成标记时不会跳转",
     "稳定加载的无任务点文字 cards 子页面经过浏览后，由父页面正常下一节入口跳转且只跳转一次",
     "空白/加载中的 cards 或包含任务 iframe 的章节不会被认定为无任务点文字阅读",

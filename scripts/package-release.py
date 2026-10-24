@@ -12,6 +12,9 @@ root_names = (
     "README.md", "DEPLOYMENT.md", "server.mjs", "start.cmd", "start.ps1",
 )
 files = [root / name for name in root_names]
+if (root / 'LICENSE').exists():
+    files.append(root / 'LICENSE')
+archive_root = 'chaoxing-agent'
 for folder in ("extension", "lib", "scripts", "test"):
     for path in sorted((root / folder).rglob("*")):
         if not path.is_file() or "__pycache__" in path.parts:
@@ -36,11 +39,11 @@ manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").enc
 contents["release-files.json"] = manifest_bytes
 with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as output:
     for name, value in sorted(contents.items()):
-        output.writestr(f"{root.name}/{name}", value)
+        output.writestr(f"{archive_root}/{name}", value)
 with zipfile.ZipFile(archive) as output:
     assert output.testzip() is None
     for name, details in manifest["files"].items():
-        assert sha256(output.read(f"{root.name}/{name}")).hexdigest() == details["sha256"]
+        assert sha256(output.read(f"{archive_root}/{name}")).hexdigest() == details["sha256"]
 print(json.dumps({"archive": str(archive), "files": len(contents),
                   "bytes": archive.stat().st_size,
                   "sha256": sha256(archive.read_bytes()).hexdigest()}, ensure_ascii=False))

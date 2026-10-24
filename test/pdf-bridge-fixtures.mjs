@@ -29,16 +29,18 @@ const topUrl = 'https://mooc1.chaoxing.com/mycourse/studentstudy?courseid=fixtur
 const cardsUrl = 'https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture';
 const pdfUrl = 'https://mooc1.chaoxing.com/ananas/modules/pdf/index.html?fixture=1';
 const viewerUrl = 'https://pan-yz.chaoxing.com/preview?fixture=1';
+const screenUrl = 'https://mooc1.chaoxing.com/mooc-ans/screen/file?objectid=fixture&ext=pdf';
 const rogueUrl = 'https://pan-yz.chaoxing.com/rogue?fixture=1';
-async function fixture({ callback = true, pages = 2, injectMain = true, documentMode = 'fast' } = {}) {
+async function fixture({ callback = true, pages = 2, injectMain = true, documentMode = 'fast', tracked = true, redirected = false } = {}) {
   const page = await browser.newPage();
-  const records = new Map(), frameIds = new Map(), events = [];
+  const records = new Map(), frameIds = new Map(), events = [], reportHistory = [];
   let nextId = 1, route;
   await page.exposeBinding('__cxFixture', ({ frame }, message) => {
     if (!frameIds.has(frame)) frameIds.set(frame, frame === page.mainFrame() ? 0 : nextId++);
     const frameId = frameIds.get(frame);
     if (message.type === 'state') return { ok: true, value: { enabled: true, config: { autoSubmit: true, confidence: .85, nextSelector: '', completeSelector: '', documentMode } } };
     if (message.type === 'report') {
+      reportHistory.push({ frameId, ...message.value, at: Date.now() });
       if (frameId === 0 && route && route !== message.value.route) records.clear();
       if (frameId === 0) route = message.value.route;
       records.set(frameId, { frameId, ...message.value, at: Date.now() });
@@ -49,12 +51,12 @@ async function fixture({ callback = true, pages = 2, injectMain = true, document
     if (message.type === 'solve') throw new Error('PDF fixture must never call a model');
     return { ok: true, value: { ok: true } };
   });
-  await page.route('**/*', route => {
+  await page.context().route('**/*', route => {
     const url = route.request().url();
     let body = '<html><body>intercepted fixture</body></html>';
     if (url === topUrl) body = `<iframe id="iframe" style="width:1000px;height:700px" src="${cardsUrl}"></iframe><button id="prevNextFocusNext" onclick="window.nextClicks=(window.nextClicks||0)+1;document.getElementById('iframe').src='about:blank#next'">下一节</button>`;
-    if (url === cardsUrl) body = `<div id="job" class="ans-attach-ct"><span class="ans-job-icon"></span><iframe style="width:950px;height:650px" src="${pdfUrl}"></iframe></div>`;
-    if (url === pdfUrl) body = `<iframe id="panView" style="width:900px;height:600px" src="${viewerUrl}"></iframe><iframe id="rogue" src="${rogueUrl}"></iframe><script>window.finishCalls=0;window.received=[];addEventListener('message',e=>{if(e.data?.type==='cx-agent:pdf-finish')received.push(e.data);});${callback ? 'window.finishJob=function(){finishCalls++;window.callbackAt=Date.now();};' : ''}</script>`;
+    if (url === cardsUrl) body = `<div class="ans-cc"><div id="job" class="ans-attach-ct">${tracked ? '<span class="ans-job-icon"></span>' : ''}<iframe style="width:950px;height:650px" src="${pdfUrl}"></iframe></div></div>`;
+    if (url === pdfUrl) body = `<meta name="referrer" content="no-referrer-when-downgrade"><iframe id="panView" style="width:900px;height:600px" src="${viewerUrl}"></iframe><iframe id="rogue" src="${rogueUrl}"></iframe><script>${redirected ? `const pan=document.getElementById('panView');const originalGet=pan.getAttribute.bind(pan);pan.getAttribute=name=>name==='src'?'${screenUrl}':originalGet(name);` : ''}window.finishCalls=0;window.received=[];addEventListener('message',e=>{if(e.data?.type==='cx-agent:pdf-finish')received.push(e.data);});${callback ? 'window.finishJob=function(){finishCalls++;window.callbackAt=Date.now();};' : ''}</script>`;
     if (url === viewerUrl) body = `<ul class="fileBox">${Array.from({length: pages}, (_, i) => `<li id="page${i + 1}" style="height:900px">Document page ${i + 1}</li>`).join('')}</ul><script>window.scrolls=[];const original=Element.prototype.scrollIntoView;Element.prototype.scrollIntoView=function(...args){scrolls.push({id:this.id,at:Date.now()});return original.apply(this,args);};</script>`;
     return route.fulfill({ contentType: 'text/html; charset=utf-8', body });
   });
@@ -64,7 +66,7 @@ async function fixture({ callback = true, pages = 2, injectMain = true, document
   assert.ok(pdf && viewer && cards && rogue, 'real nested cross-origin fixture frames loaded');
   if (injectMain) await pdf.addScriptTag({ content: pdfBridge });
   return {
-    page, pdf, viewer, cards, rogue, events, records,
+    page, pdf, viewer, cards, rogue, events, records, reportHistory,
     async start() {
       for (const target of [page.mainFrame(), cards, pdf, viewer]) {
         await target.evaluate(() => { globalThis.chrome = { storage: { local: { get: async () => ({}), set: async () => {} } }, runtime: { sendMessage: message => globalThis.__cxFixture(message) } }; });
@@ -127,6 +129,29 @@ try {
   assert.equal(await fast.cards.locator('#job').evaluate(node => node.classList.contains('ans-job-finished')), false);
   results.push('快速模式直接滚到第20页末尾并在5秒内请求正常完成回调，未自行标记完成或跳转');
   await fast.page.close();
+
+  const markerless = await fixture({ callback: false, tracked: false, pages: 2 });
+  await markerless.start();
+  await markerless.page.waitForFunction(() => window.nextClicks === 1, null, { timeout: 20000 });
+  const viewerReport = markerless.reportHistory.find(item => item.url === viewerUrl && item.untrackedDocumentViewed);
+  assert.equal(viewerReport?.untrackedDocumentViewed, true);
+  assert.equal(viewerReport?.documentPageCount, 2);
+  assert.equal(await markerless.cards.locator('.ans-job-icon').count(), 0);
+  assert.equal(markerless.events.filter(event => event.type === 'next').length, 1);
+  results.push('无任务标记的 PDF 在真实跨源阅读器加载并浏览到底后进入下一节，额外嵌入 iframe 不会混淆文档来源');
+  await markerless.page.close();
+
+  const redirected = await fixture({ callback: false, tracked: false, redirected: true });
+  await redirected.start();
+  await redirected.page.waitForFunction(() => window.nextClicks === 1, null, { timeout: 20000 });
+  const redirectReport = redirected.reportHistory.find(item => item.url === viewerUrl && item.pdfParentVerified);
+  assert.equal(redirectReport?.untrackedDocumentViewed, true);
+  assert.equal(redirectReport?.pdfParentUrl, pdfUrl);
+  assert.equal(redirectReport?.documentPageCount, 2);
+  assert.equal(redirected.reportHistory.filter(item => item.url === viewerUrl && item.pdfParentVerified).length > 0, true);
+  assert.equal(redirected.events.filter(event => event.type === 'next').length, 1);
+  results.push('mooc1 文件入口重定向到 pan-yz 后，真实父模块验证阅读器窗口并进入下一节');
+  await redirected.page.close();
 
   const security = await fixture();
   const id = '11111111-1111-4111-8111-111111111111';

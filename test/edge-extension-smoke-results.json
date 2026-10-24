@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-24T14:23:29.026Z",
+  "browser": "Microsoft Edge",
+  "extensionVersion": "1.0.1",
+  "scope": "Disposable Edge profile and intercepted Chaoxing page; no user profile or real course access",
+  "checks": [
+    "Edge loaded the extension content scripts on a matched HTTPS page",
+    "Edge started the Manifest V3 service worker with the expected version",
+    "Edge extension service worker reached the local service; unauthenticated health was correctly denied"
+  ],
+  "healthStatus": 401,
+  "browserVersion": "156.0.4314.42",
+  "passed": true
+}

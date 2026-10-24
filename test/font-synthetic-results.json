@@ -1,6 +1,6 @@
 {
-  "at": "2026-10-20T00:09:08.355Z",
-  "browser": "155.0.8059.80",
+  "at": "2026-10-24T12:47:56.069Z",
+  "browser": "155.0.8059.86",
   "scope": "fully intercepted disposable browser; original synthetic font plus optional local-only real font; simulated extension transport/solver; no live submissions or model calls",
   "font": {
     "available": false
@@ -9,8 +9,10 @@
     "供应商库与字形数据的 SHA-256 一致，映射表20,902项，manifest加载顺序正确",
     "原创合成TTF轮廓与测试专用映射可走完整本地解析/MD5/节点恢复链路，发布包无需真实课程字体",
     "没有本地课程字体时仍验证普通文字与Python换行、缩进提取",
+    "英文填空题仅有固定题型标签时不误判特殊字体；正文出现未知汉字仍暂停",
     "无input的真实LI role=radio单选/判断可按aria及已知选中class校验最终键集合",
-    "无input选项点击未生效或状态未知时拒绝完成填写/提交"
+    "无input选项点击未生效或状态未知时拒绝完成填写/提交",
+    "题干中的“判断”不改变简答题或单选题类型；优先使用平台 TiMu 题型标记"
   ],
   "skipped": [
     "SKIP: 本地专用 live-cx-font.ttf 不存在或显式禁用；真实课程字体分支跳过，合成字体、格式及控件验证仍执行。"

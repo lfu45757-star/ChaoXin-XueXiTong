@@ -1,11 +1,13 @@
 {
-  "at": "2026-10-23T04:02:27.460Z",
-  "browser": "155.0.8059.86",
+  "at": "2026-10-24T14:25:01.371Z",
+  "browser": "156.0.4314.42",
   "scope": "intercepted disposable browser fixtures; real cross-origin nested frames; full-content transport mocked in page world; separate real ISOLATED-to-MAIN bridge messaging test; no live course access",
   "checks": [
     "MAIN 桥接静态注册仅限 PDF 模块路径，未增加 scripting/debugger 权限",
     "跨源 pan-yz 两页均滚动停留后只调用一次站点 finishJob，真实父层完成标记出现后才跳转",
     "快速模式直接滚到第20页末尾并在5秒内请求正常完成回调，未自行标记完成或跳转",
+    "无任务标记的 PDF 在真实跨源阅读器加载并浏览到底后进入下一节，额外嵌入 iframe 不会混淆文档来源",
+    "mooc1 文件入口重定向到 pan-yz 后，真实父模块验证阅读器窗口并进入下一节",
     "错误来源窗口、错误 origin、额外方法字段均被拒绝；重复或不同关联 ID 不重复调用同一文档回调",
     "真实 ISOLATED world 仅接受 MAIN parent、精确 origin 与关联 ID 的回复，同一文档重复请求合并",
     "站点没有 finishJob 时只尝试一次并等待平台或人工，不制造完成标记或跳转"

@@ -35,13 +35,13 @@ test('子帧逐题进度立即保存，顶层心跳不能盖掉，后台重启�
   await f.send({ type: 'control', tabId: 7, enabled: true });
   await f.send({ type: 'claimTask', key: 'quiz' }, 2);
   const progress = { kind: 'quiz', phase: 'filled', current: 2, total: 5, filled: 2 };
-  await f.send({ type: 'report', value: { mode: 'quiz', status: '已填写并校验 2/5 题', busy: true, progress } }, 2);
+  await f.send({ type: 'report', value: { mode: 'quiz', status: '已填写并校验 2/5 题', taskTitle: 'U1-Words in use', busy: true, progress } }, 2);
   await f.send({ type: 'report', value: { mode: 'page', status: '等待任务', route: 'fixture' } }, 0);
-  assert.equal(f.sessions['tab:7'].last, '已填写并校验 2/5 题');
+  assert.equal(f.sessions['tab:7'].last, 'U1-Words in use · 已填写并校验 2/5 题');
   assert.deepEqual(f.sessions['tab:7'].progress, progress);
   const restarted = await setup({ sessions: f.sessions, local: f.local });
   const state = (await restarted.send({ type: 'popupState', tabId: 7 })).value;
-  assert.equal(state.enabled, true); assert.equal(state.last, '已填写并校验 2/5 题');
+  assert.equal(state.enabled, true); assert.equal(state.last, 'U1-Words in use · 已填写并校验 2/5 题');
   assert.equal(state.frames.length, 2); assert.equal(state.stale, false);
   assert.equal(restarted.power.at(-1), 'system');
   await restarted.send({ type: 'control', tabId: 7, enabled: false });
@@ -59,6 +59,17 @@ test('过期报告明确标记 stale，页面加载清除旧进度但保持托�
   const state = (await f.send({ type: 'popupState', tabId: 7 })).value;
   assert.equal(state.enabled, true); assert.equal(state.frames.length, 0); assert.equal(state.progress, null);
   assert.match(state.last, /加载/);
+});
+
+test('多个阻塞练习轮流上报时弹窗固定显示同一题并显示待处理数量', async () => {
+  const f = await setup();
+  await f.send({ type: 'control', tabId: 7, enabled: true });
+  const blocked = (taskTitle) => ({ mode: 'blocked', status: '上次提交结果尚未确认', taskTitle, busy: false });
+  await f.send({ type: 'report', value: blocked('U1-Expressions in use') }, 3);
+  await f.send({ type: 'report', value: blocked('U1-Words in use') }, 2);
+  assert.equal(f.sessions['tab:7'].last, '2 个练习待处理 · U1-Words in use · 上次提交结果尚未确认');
+  await f.send({ type: 'report', value: blocked('U1-Expressions in use') }, 3);
+  assert.equal(f.sessions['tab:7'].last, '2 个练习待处理 · U1-Words in use · 上次提交结果尚未确认');
 });
 
 test('防休眠只在托管时保持，多个标签停止/关闭/离开课程和开关设置正确释放', async () => {

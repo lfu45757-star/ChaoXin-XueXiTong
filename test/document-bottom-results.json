@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-22T17:46:04.402Z",
+  "at": "2026-10-24T09:56:33.329Z",
   "scope": "Disposable headless browser, fully intercepted URLs, real layout/scroll/image loading; actual content and helper with mocked extension transport; no real courses",
   "passed": 9,
   "checks": [

@@ -102,6 +102,12 @@
       if (node.nodeType !== Node.ELEMENT_NODE) return;
       const style = getComputedStyle(node);
       if (['SCRIPT', 'STYLE', 'NOSCRIPT', 'INPUT', 'TEXTAREA'].includes(node.tagName) || style.display === 'none' || ['hidden', 'collapse'].includes(style.visibility)) return;
+      // Chaoxing places its fixed question-type badge inside font-cxsecret.
+      // Its plain Chinese label is page chrome, not an encoded question glyph.
+      if (node.matches('.newZy_TItle') && /^【(?:单选|多选|判断|填空|简答|论述|计算|编程)题】$/.test(node.textContent.trim())) {
+        value += node.textContent;
+        return;
+      }
       if (node.tagName === 'BR') { value += '\n'; return; }
       const block = ['block', 'list-item', 'table-row', 'flex', 'grid', 'flow-root'].includes(style.display);
       if (block) newline();
@@ -295,13 +301,29 @@
     return /提交成功|作业已提交|已完成本次答题|本次作业已完成/.test(text(document.body)) ||
       (!!first(['.mark_score', '.totalScore', '.resultScore']) && !submitButton());
   }
+  function platformWorkPending() {
+    if (!workPath.test(location.pathname) || submissionSuccess()) return false;
+    const status = first(['#RightCon .testTit_status', '.testTit_status']);
+    return !!status && text(status) === '待完成';
+  }
   function submitButton() { return first(['.btnSubmit.workBtnIndex', '#videoquiz-submit']) || button(/^(提交|提交作业|提交答案|确认提交)$/); }
-  function confirmSubmit() {
+  const confirmedSubmissions = new Set();
+  function confirmSubmit(submissionKey = '') {
     const dialog = first(['#workpop', '#workpopFocus', '.layui-layer-dialog', '[role="dialog"]', '.cxDialog', '.popbg', '.popDiv']);
-    if (!dialog || !/提交/.test(text(dialog))) return false;
-    if (/未做完|未完成|未达到及格线|不能提交/.test(text(dialog))) throw new Error('平台提示练习未完成或未通过，请检查题目');
-    const confirm = first(['#popok'], dialog) || button(/^(确定|确认|提交|确认提交)$/ , dialog);
-    if (confirm) { safeClick(confirm); return true; }
+    if (!dialog) return false;
+    // The studentstudy confirmation UI uses #workpopFocus only for its
+    // heading. #popcontent and #popok are visible siblings of that heading.
+    const shell = dialog.id === 'workpopFocus' ? dialog.parentElement : dialog;
+    const prompt = dialog.id === 'workpopFocus' ? first(['#popcontent'], shell) : dialog;
+    if (!prompt || !/提交/.test(text(prompt))) return false;
+    if (/未做完|未完成|未达到及格线|不能提交/.test(text(prompt))) throw new Error('平台提示练习未完成或未通过，请检查题目');
+    const confirm = first(['#popok'], shell) || button(/^(确定|确认|提交|确认提交)$/ , shell);
+    if (confirm) {
+      if (submissionKey && confirmedSubmissions.has(submissionKey)) return true;
+      safeClick(confirm);
+      if (submissionKey) confirmedSubmissions.add(submissionKey);
+      return true;
+    }
     return false;
   }
   function gate() {
@@ -336,14 +358,45 @@
   }
   const cardsPath = /^\/(?:mooc-ans\/)?knowledge\/cards\/?$/;
   const workPath = /^\/(?:mooc-ans\/)?(?:work\/(?:doHomeWorkNew|selectWorkQuestionYiPiYue)|api\/work)\/?$/;
+  const pdfPath = /^\/ananas\/modules\/pdf\//;
+  function workTitle() {
+    return workPath.test(location.pathname) ? text(first(['#RightCon h3', '.ceyan_name h3', '.workTitle h3'])).slice(0, 80) : '';
+  }
   const loadingSelectors = ['[aria-busy="true"]', '.loading', '.loading-mask', '.loadmask', '.layui-layer-loading'];
   function frameState() {
     const cards = cardsPath.test(location.pathname);
+    const attachments = cards ? all('.ans-attach-ct') : [];
+    const attachmentFrames = attachments.flatMap(attachment => all('iframe[src]', attachment));
+    const pdfFrames = attachmentFrames.filter(frame => {
+      try { return pdfPath.test(new URL(frame.getAttribute('src'), location.href).pathname); } catch { return false; }
+    });
+    const cardBody = cards ? first(['.ans-cc']) : null;
+    // A loaded chapter can contain only an illustration or ordinary prose.
+    // Require real rendered content before treating the absence of markers as
+    // an empty task list; an empty/loading cards frame is not evidence.
+    const contentRoot = cards ? document.querySelector('#pageDiv,.ans-cc') : null;
+    const explicitTask = document.querySelector('.ans-job-icon,.ans-attach-ct,.singleQuesId,.TiMu,.questionLi,.question-item,.mark_item,.queBox,.ans-videoquiz');
+    // Auxiliary frames may live outside the chapter body. Only embedded
+    // content inside this chapter can represent an untracked media task.
+    const embeddedTask = contentRoot?.querySelector('iframe,video,audio,object,embed');
+    const renderedImage = !!contentRoot && !!contentRoot.querySelector('img[src],svg,canvas,figure,[style*="background-image"]');
+    const renderedText = !!contentRoot && text(contentRoot).length >= 40;
+    const noTaskContent = cards && document.readyState === 'complete' && !first(loadingSelectors) &&
+      !!contentRoot && !explicitTask && !embeddedTask && (renderedImage || renderedText);
+    const documentOnly = !!cardBody && attachments.length > 0 && pdfFrames.length === attachments.length &&
+      attachments.every(attachment => all('iframe[src]', attachment).length === 1 && !attachment.querySelector('.ans-job-icon')) &&
+      all('iframe,video,audio,object,embed', cardBody).length === pdfFrames.length &&
+      !document.querySelector('.singleQuesId,.TiMu,.questionLi,.question-item,.mark_item,.queBox,.ans-videoquiz');
     const workFrames = cards ? all('.ans-attach-ct iframe').filter(frame => {
       try { return /\/ananas\/modules\/work\//.test(new URL(frame.getAttribute('src'), location.href).pathname); } catch { return false; }
     }) : [];
     return {
       cardsReady: cards && document.readyState === 'complete' && !first(loadingSelectors),
+      noTaskContent,
+      documentOnly,
+      pdfFrameUrls: documentOnly ? pdfFrames.map(frame => new URL(frame.getAttribute('src'), location.href).href) : [],
+      pdfViewerUrl: pdfPath.test(location.pathname) && first(['iframe#panView[src]']) ?
+        new URL(first(['iframe#panView[src]']).getAttribute('src'), location.href).href : null,
       workFrameCount: workFrames.length,
       workFrameUrls: workFrames.map(frame => new URL(frame.getAttribute('src'), location.href).href),
       workFrameJobs: workFrames.map(frame => {
@@ -352,7 +405,7 @@
         return { url: new URL(frame.getAttribute('src'), location.href).href, hasMarker: !!icon,
           done: !!icon && (icon.classList.contains('ans-job-finished') || attachment.classList.contains('ans-job-finished')) };
       }),
-      childFrameUrls: /\/ananas\/modules\/work\//.test(location.pathname) ? all('iframe[src]').map(frame => {
+      childFrameUrls: (/\/ananas\/modules\/work\//.test(location.pathname) || pdfPath.test(location.pathname)) ? all('iframe[src]').map(frame => {
         try { return new URL(frame.getAttribute('src'), location.href).href; } catch { return null; }
       }).filter(Boolean) : [],
       submissionConfirmed: workPath.test(location.pathname) && submissionSuccess()
@@ -444,7 +497,18 @@
     }
     if (work.size < (cards.workFrameCount || 0) || [...work.values()].some(report => !report.submissionConfirmed))
       return wait('章节练习尚未确认全部提交，等待平台回执');
-    return { ready: true, cards };
+    const untrackedDocumentComplete = !!cards.documentOnly && !!cards.pdfFrameUrls?.length &&
+      cards.pdfFrameUrls.every(moduleUrl => {
+        const module = reports.find(report => fresh(report) && sameFrameUrl(report.url, moduleUrl));
+        if (!module) return false;
+        if (!module.pdfViewerUrl) return module.untrackedDocumentViewed === true && module.documentPageCount > 0;
+        return reports.some(viewer =>
+          fresh(viewer) && viewer.untrackedDocumentViewed === true && viewer.documentPageCount > 0 &&
+          (sameFrameUrl(viewer.url, module.pdfViewerUrl) ||
+            (cards.pdfFrameUrls.length === 1 && viewer.pdfParentVerified === true &&
+              sameFrameUrl(viewer.pdfParentUrl, moduleUrl))));
+      });
+    return { ready: true, cards, untrackedDocumentComplete };
   }
   function completion(selector) {
     if (selector) return !!first([selector]);
@@ -502,5 +566,5 @@
       card: card ? [...card.parentElement.children].indexOf(card) + ':' + (card.id || '') + ':' + text(card) : '' });
   }
   globalThis.ChaoxingAdapter = { text, questionText, courseContext, visible, all, first, prepareClick, safeClick, parseQuestions, validateAnswers, applyAnswers, verifyAnswers, submitButton,
-    submissionSuccess, confirmSubmit, gate, jobs, mediaCompleted, mediaElements, frameState, isWorkPage: () => workPath.test(location.pathname), platformWorkCompleted, chapterReadiness, completion, nextAction, nextChapterConfirmation, nextCard, currentCard, documentPages, textReading, routeSignature };
+    submissionSuccess, platformWorkPending, confirmSubmit, gate, jobs, mediaCompleted, mediaElements, frameState, workTitle, isWorkPage: () => workPath.test(location.pathname), platformWorkCompleted, chapterReadiness, completion, nextAction, nextChapterConfirmation, nextCard, currentCard, documentPages, textReading, routeSignature };
 })();

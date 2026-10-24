@@ -1,6 +1,6 @@
 # 安装与部署
 
-本项目由浏览器扩展和本机 Node.js 服务组成，当前版本 0.2.8。服务与浏览器应运行在同一台电脑；以下 Windows 操作与仓库自带脚本对应。
+本项目由浏览器扩展和本机 Node.js 服务组成，当前版本 1.0.1。服务与浏览器应运行在同一台电脑；以下 Windows 操作与仓库自带脚本对应。
 
 ## 环境要求
 
@@ -16,7 +16,7 @@
 1. 将源码或发布包解压到固定目录，保留 `extension`、`lib`、`scripts` 等完整目录结构。
 2. 如需环境配置，将 `.env.example` 复制为 `.env`；已有配置不要覆盖。默认使用本机 Codex 登录。
 3. 双击 `start.cmd`，或在项目目录执行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/manage-service.ps1 -Action Start`。这是本机后台服务启动方式。
-4. Chrome 打开 `chrome://extensions/`，启用开发者模式，选择“加载已解压的扩展程序”，选择项目的 `extension` 目录。
+4. Chrome 打开 `chrome://extensions/`，或 Edge 打开 `edge://extensions/`，启用开发者模式，选择“加载已解压的扩展程序”，选择项目的 `extension` 目录。
 5. 在本机打开 `data/token.txt`，将配对令牌填入扩展弹窗并保存。不要分享令牌或将它提交到 GitHub。
 6. 刷新已打开的课程页，在扩展中确认服务已连接、版本一致，再选择具体课程章节开始使用。
 
@@ -61,6 +61,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/manage-service.ps1 -
 - 端口占用：确认占用者；管理脚本不会停止不属于本项目的程序。
 - 提交结果未知：先检查平台回执。仅在确定没有提交时使用扩展提供的当前页未确认记录处理功能，避免重复提交。
 
+Edge 更新：打开 `edge://extensions/`，找到本工具并点击“重新加载”，随后刷新课程页面，确认扩展与本地服务版本均为 1.0.1。Chrome 使用 `chrome://extensions/` 完成同样操作。
+
 更新前停止托管并备份本机 `.env` 与 `data`，更新程序文件后重启服务、重新加载扩展及刷新页面。回退同样保留本机数据；备份包含私人内容，应仅留在本机。
 
 ## 验证与发布
@@ -70,6 +72,6 @@ node --test test/*.test.mjs
 python scripts/package-release.py
 ```
 
-2026-10-23 本次发布准备使用 Node.js 24.20.0，58 项单元测试通过；没有调用付费模型或向真实课程提交。浏览器夹具的环境与命令见 README，历史结果不代表本轮重跑。
+2026-10-24 本次发布准备使用 Node.js 24.20.0，59 项单元测试通过；没有调用付费模型或向真实课程提交。浏览器夹具的环境与命令见 README，历史结果不代表本轮重跑。
 
 打包生成上一级目录中的版本 ZIP 与项目内的 `release-files.json`，校验每个文件 SHA-256、归档完整性和当前配对令牌排除。发布只使用白名单归档内容；不上传整个工作目录。`.env`、`data/`、真实课程截图及 `live-*` 联调记录不进入归档。第三方资源说明见 `extension/vendor/THIRD_PARTY_LICENSES.md`。

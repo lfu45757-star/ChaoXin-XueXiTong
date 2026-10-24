@@ -83,7 +83,9 @@ try {
       window.records={};window.events=[];window.enabled=true;window.solverCalls=0;window.frameReports=settings.frames||[];window.scrolls=[];
       if(settings.syntheticCards)frameReports.push({frameId:999,url:'https://mooc1.chaoxing.com/mooc-ans/knowledge/cards?courseid=fixture',cardsReady:true,jobTotal:0,jobDone:0});
       if(settings.trackScroll){const original=Element.prototype.scrollIntoView;Element.prototype.scrollIntoView=function(...args){scrolls.push(this.id);return original.apply(this,args);};}
-      globalThis.chrome={storage:{local:{get:async key=>({[key]:records[key] || (settings.checkpointStage && key.startsWith('quiz:') ? {stage:settings.checkpointStage}:undefined)}),set:async value=>Object.assign(records,value)}},runtime:{sendMessage:async m=>{
+      globalThis.chrome={storage:{local:{get:async key=>({[key]:records[key] || (key.startsWith('quiz:') && settings.checkpoint ?
+        { ...settings.checkpoint, context: settings.checkpoint.context || globalThis.ChaoxingAdapter?.courseContext() } :
+        settings.checkpointStage && key.startsWith('quiz:') ? {stage:settings.checkpointStage}:undefined)}),set:async value=>Object.assign(records,value)}},runtime:{sendMessage:async m=>{
         if(m.type==='state')return{ok:true,value:{enabled,config:{confidence:0.85,autoSubmit:true,nextSelector:'',completeSelector:''}}};
         if(m.type==='solve'){solverCalls++;if(settings.delay)await new Promise(r=>setTimeout(r,settings.delay));return{ok:true,value:{answers:[{id:'1',values:['B'],confidence:settings.confidence??0.99,explanation:'fixture'}]}};}
         if(m.type==='claimTask')return{ok:true,value:{ok:true}};
@@ -131,6 +133,23 @@ try {
   await popup.evaluate(() => { frameReports[0].jobDone=1; });
   await popup.waitForFunction(() => events.some(e=>e.type==='next'), null, { timeout:15000 });
   results.push('父页面提交确认弹窗与子 frame 平台完成状态汇总'); await popup.close();
+  const splitPopup = await scenario('<div class="maskDiv"><div id="workpopFocus" role="alertdialog"><span>提示</span></div><div id="popcontent">确认提交？</div><button id="popok" onclick="window.confirmed=(window.confirmed||0)+1;this.parentElement.style.display=\'none\';frameReports[0]={frameId:1,busy:false,mode:\'complete\',status:\'完成\',jobTotal:1,jobDone:1}">确定</button><button id="popno">取消</button></div><button id="prevNextFocusNext">下一节</button>',
+    { frames: [{ frameId:1,busy:true,mode:'submitting',status:'提交中',jobTotal:1,jobDone:0 }] });
+  await splitPopup.waitForFunction(() => window.confirmed === 1);
+  assert.equal(await splitPopup.evaluate(() => confirmed),1);
+  await splitPopup.close();
+  const unrelatedPopup = await scenario('<div class="maskDiv"><div id="workpopFocus" role="alertdialog"><span>提示</span></div><div id="popcontent">请先登录</div><button id="popok" onclick="window.confirmed=true">确定</button></div>',
+    { frames: [{ frameId:1,busy:true,mode:'submitting',status:'提交中',jobTotal:1,jobDone:0 }] });
+  await unrelatedPopup.waitForTimeout(1300);
+  assert.equal(await unrelatedPopup.evaluate(() => !!window.confirmed),false);
+  await unrelatedPopup.close();
+  const pendingPopup = await scenario('<div class="maskDiv"><div id="workpopFocus" role="alertdialog"><span>提示</span></div><div id="popcontent">确认提交？</div><button id="popok" onclick="window.confirmed=(window.confirmed||0)+1">确定</button></div>',
+    { frames: [{ frameId:1,busy:false,mode:'blocked',status:'提交结果未确认，已停止重复提交，请检查平台',quizKey:'a'.repeat(64),jobTotal:1,jobDone:0 }] });
+  await pendingPopup.waitForFunction(() => window.confirmed === 1);
+  await pendingPopup.waitForTimeout(2400);
+  assert.equal(await pendingPopup.evaluate(() => confirmed),1);
+  await pendingPopup.close();
+  results.push('studentstudy 的标题、提示文字与确认按钮为兄弟节点时仅确认提交；旧提交意图可完成仍打开的弹窗且不重复点击');
   const competing = await scenario('<div class="maskDiv"><div id="workpop" class="popDiv"><p id="popcontent">确认提交?</p><a id="popok" onclick="window.confirmed=(window.confirmed||0)+1;document.querySelector(\'.maskDiv\').style.display=\'none\';frameReports[1]={frameId:2,busy:false,mode:\'complete\',status:\'第二任务完成\',jobTotal:1,jobDone:1}">确定</a></div></div><div class="ans-attach-ct ans-job-finished"><span class="ans-job-icon"></span></div><button id="prevNextFocusNext" onclick="window.nextClicks=(window.nextClicks||0)+1;frameReports=[];document.querySelector(\'.ans-attach-ct\').remove();history.pushState({},\'\',location.pathname+\'?courseid=fixture&chapter=4\')">下一节</button>',
     {frames:[
       {frameId:1,busy:true,mode:'blocked',status:'第一任务提交结果未知',jobTotal:1,jobDone:0},
@@ -160,6 +179,20 @@ try {
   assert.match(await uncertain.evaluate(()=>lastReport.status),/上次提交结果尚未确认/);
   results.push('unknown/uncertain提交checkpoint保持暂停，不调用solver、不重新填写或重复提交');
   await uncertain.close();
+  const staleAnswer = {stage:'uncertain',at:Date.now()-180000,answers:[{id:'1',values:['B'],confidence:0.99,explanation:'fixture'}]};
+  const recovered = await scenario(fixture+'<div id="RightCon"><span class="testTit_status">待完成</span></div><button class="btnSubmit workBtnIndex" onclick="window.submits=(window.submits||0)+1;this.insertAdjacentHTML(\'afterend\',\'<span class=testTit_status_complete>已提交</span>\')">提交</button>',
+    {url:'https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?courseId=fixture',checkpoint:staleAnswer});
+  await recovered.waitForFunction(()=>Object.values(records).some(x=>x.stage==='submitted'),null,{timeout:10000});
+  assert.equal(await recovered.evaluate(()=>window.submits||0),1);
+  assert.equal(await recovered.evaluate(()=>solverCalls),0);
+  results.push('刷新后的平台明确待完成且旧记录超过两分钟时，只用已核对答案恢复提交一次');
+  await recovered.close();
+  const exhausted = await scenario(fixture+'<div id="RightCon"><span class="testTit_status">待完成</span></div><button onclick="window.submits=(window.submits||0)+1">提交</button>',
+    {url:'https://mooc1.chaoxing.com/mooc-ans/work/doHomeWorkNew?courseId=fixture',checkpoint:{...staleAnswer,recoveryCount:1}});
+  await exhausted.waitForFunction(()=>window.lastReport?.mode==='blocked');
+  assert.equal(await exhausted.evaluate(()=>window.submits||0),0);
+  results.push('一次恢复仍未确认时保持暂停，防止无限重试');
+  await exhausted.close();
   const documentPage = await scenario('<ul class="fileBox"><li id="p1" style="height:900px">文档第 1 页</li><li id="p2" style="height:900px">文档第 2 页</li></ul><button id="prevNextFocusNext">下一节</button>', { trackScroll:true });
   await documentPage.waitForFunction(() => scrolls.length===1 && window.lastReport?.mode==='complete', null, { timeout:5000 });
   assert.deepEqual(await documentPage.evaluate(() => scrolls), ['p2']);

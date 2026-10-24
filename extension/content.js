@@ -15,13 +15,20 @@
     if (!reply?.ok) throw new Error(reply?.error || '扩展后台未响应');
     return reply.value;
   };
+  const documentKey = pages => location.href + ':' + pages.length + ':' + (pages[0]?.id || '') + ':' + (pages[0]?.querySelector('img')?.src || '');
   const report = () => {
     const jobs = A.jobs();
+    const viewedPages = documentViewed ? A.documentPages() : [];
+    const currentDocumentViewed = viewedPages.length > 0 && documentSignature === documentKey(viewedPages);
     return send({ type: 'report', value: { status, mode, busy: working, url: location.href, quizKey, progress,
+      taskTitle: A.workTitle(),
       ...(mode === 'skipped' && skippedQuizKey === quizKey ? { skipReason: 'no-valid-answer' } : {}),
       jobTotal: jobs.length, jobDone: jobs.filter(job => job.done).length,
       skippedJobTotal: globalThis.ChaoxingDiscussion?.skippedCount(jobs) || 0,
       trackedJobTotal: A.all('.ans-job-icon').length, ...A.frameState(),
+      untrackedDocumentViewed: currentDocumentViewed, documentPageCount: currentDocumentViewed ? viewedPages.length : 0,
+      pdfParentVerified: currentDocumentViewed && ['invoked', 'unavailable', 'error'].includes(documentFinish?.status),
+      pdfParentUrl: currentDocumentViewed && ['invoked', 'unavailable', 'error'].includes(documentFinish?.status) ? document.referrer : null,
       untrackedTextViewed: untrackedTextViewed && A.textReading()?.key === textObservation?.key,
       ...(topFrame ? { route: A.routeSignature() } : {}) } }).catch(() => {});
   };
@@ -140,7 +147,12 @@
     const videoQuiz = parsed.some(q => q.node.classList.contains('ans-videoquiz'));
     const key = await fingerprint(parsed);
     quizKey = key;
-    const old = (await chrome.storage.local.get(`quiz:${key}`))[`quiz:${key}`];
+    let old = (await chrome.storage.local.get(`quiz:${key}`))[`quiz:${key}`];
+    const context = A.courseContext();
+    const effectiveContext = (source, settings) => ({ ...source, programmingLanguage: settings.programmingLanguage && settings.programmingLanguage !== 'auto' ? settings.programmingLanguage : source.programmingLanguage });
+    const answerContext = effectiveContext(context, config);
+    const sameContext = (source, expected = answerContext) => ['courseTitle', 'chapterTitle', 'programmingLanguage'].every(name => source?.[name] === expected[name]);
+    let recoveryCount = old?.recoveryCount || 0;
     const finishIfPlatformComplete = async () => {
       const marker = A.platformWorkCompleted() || A.platformWorkCompleted(await send({ type: 'reports' }));
       const receipt = !marker && A.submissionSuccess();
@@ -158,7 +170,25 @@
     }
     if (old?.stage === 'submitted') { status = '该任务已有提交记录，等待平台完成标记'; mode = 'awaiting-completion'; return; }
     if (old?.stage === 'submitting' || old?.stage === 'uncertain') {
-      status = '上次提交结果尚未确认，请检查平台；不会重复提交'; mode = 'blocked'; return;
+      // A fresh platform page explicitly saying "待完成" can disprove an old
+      // submission intent. Allow one recovery only after a generous grace
+      // period; never infer failure from a stale page or missing marker.
+      const answers = old.answers;
+      const low = Array.isArray(answers) && answers.filter(answer => answer.confidence < config.confidence);
+      const reusable = Array.isArray(answers) && answers.length === parsed.length &&
+        answers.every(answer => Number.isFinite(answer.confidence) && answer.confidence > 0 &&
+          parsed.some(question => question.data.id === answer.id)) && sameContext(old.context) &&
+        (!low.length || (old.review?.attempted === true && old.review.threshold === config.confidence &&
+          Array.isArray(old.review.outcomes) && low.every(answer => old.review.outcomes.some(item => item.id === answer.id))));
+      const freshPending = Number.isFinite(old.at) && performance.timeOrigin > old.at + 1000 &&
+        Date.now() - old.at >= 120000 && A.platformWorkPending();
+      if (!freshPending || !reusable || recoveryCount >= 1) {
+        status = '上次提交结果尚未确认，请检查平台；不会重复提交'; mode = 'blocked'; return;
+      }
+      recoveryCount = 1;
+      old = { ...old, stage: 'filled', recoveryCount };
+      await remember(key, old);
+      status = '平台刷新后仍显示待完成，自动重试提交一次'; await report();
     }
     const blockedQuestion = parsed.find(q => !q.data.text || q.data.type === 'unsupported' || q.hasImages || q.hasEncodedFont);
     if (blockedQuestion) {
@@ -166,10 +196,6 @@
         blockedQuestion.hasEncodedFont ? '特殊字体未完整解码' : '题型或答题控件未适配';
       status = `第 ${blockedQuestion.data.id} 题${reason}，请人工处理后继续`; mode = 'blocked'; return;
     }
-    const context = A.courseContext();
-    const effectiveContext = (source, settings) => ({ ...source, programmingLanguage: settings.programmingLanguage && settings.programmingLanguage !== 'auto' ? settings.programmingLanguage : source.programmingLanguage });
-    const answerContext = effectiveContext(context, config);
-    const sameContext = (source, expected = answerContext) => ['courseTitle', 'chapterTitle', 'programmingLanguage'].every(name => source?.[name] === expected[name]);
     const reusable = old?.stage === 'filled' && Array.isArray(old.answers) &&
       (old.answers.every(answer => answer.confidence >= config.confidence) ||
         (old.review?.attempted === true && old.review.threshold === config.confidence)) &&
@@ -239,7 +265,7 @@
       }
       A.verifyAnswers(parsed, result.answers);
       filledOnPage = key + ':' + JSON.stringify(solutionContext);
-      await remember(key, { stage: 'filled', answers: result.answers, context: solutionContext,
+      await remember(key, { stage: 'filled', answers: result.answers, context: solutionContext, recoveryCount,
         ...(result.sources ? { sources: result.sources } : {}), ...(result.review ? { review: result.review } : {}) });
       if (!latestConfig.autoSubmit) { status = '答案已填写，等待手动提交'; return; }
       const submit = A.submitButton();
@@ -250,7 +276,7 @@
       if (await finishIfPlatformComplete()) return;
       A.prepareClick(submit);
       // Persist intent before clicking, so reloads cannot submit twice.
-      await remember(key, { stage: 'submitting', answers: result.answers, context: solutionContext });
+      await remember(key, { stage: 'submitting', answers: result.answers, context: solutionContext, recoveryCount });
       A.safeClick(submit);
       mode = 'submitting';
       progress = { ...progress, phase: 'submitting' };
@@ -274,10 +300,10 @@
           const next = A.first(['#videoquiz-continue']);
           if (next) { A.safeClick(next); continue; }
         }
-        A.confirmSubmit();
+        A.confirmSubmit(key);
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
-      await remember(key, { stage: 'uncertain', answers: result.answers, context: solutionContext });
+      await remember(key, { stage: 'uncertain', answers: result.answers, context: solutionContext, recoveryCount });
       throw new Error('提交结果未确认，已停止重复提交，请检查平台');
     } catch (error) {
       blockedKey = key; status = error.message; mode = 'blocked'; await event('blocked', status);
@@ -293,18 +319,26 @@
     const chapter = A.chapterReadiness(children);
     const markersComplete = chapter.ready && chapter.cards?.jobTotal > 0 &&
       chapter.cards.jobDone === chapter.cards.jobTotal && chapter.cards.trackedJobTotal === chapter.cards.jobTotal;
+    const noTaskChapter = chapter.ready && chapter.cards?.noTaskContent === true &&
+      chapter.cards.jobTotal === 0 && chapter.cards.trackedJobTotal === 0 &&
+      chapter.cards.workFrameCount === 0;
+    // A submission can time out while the site's confirmation modal remains
+    // open. Finish that existing click, but never start a second submission.
+    const pendingConfirmation = !markersComplete && !noTaskChapter && children.find(frame =>
+      frame.mode === 'submitting' || (frame.mode === 'blocked' &&
+        /提交结果未确认|上次提交结果尚未确认/.test(frame.status || '') && /^[a-f0-9]{64}$/.test(frame.quizKey || '')));
+    if (config.autoSubmit && pendingConfirmation) A.confirmSubmit(pendingConfirmation.quizKey || '');
     // A blocked sibling must not hide another task's live confirmation dialog.
     // A platform-complete chapter can outlive an older blocked child report.
     // A full set of completed markers in the currently loaded cards document
     // is authoritative. Old child-frame activity and duplicate nested job
     // counts must not keep the chapter on its previous task.
-    const active = markersComplete ? null : children.find(f => f.mode === 'submitting') ||
+    const active = markersComplete || noTaskChapter ? null : children.find(f => f.mode === 'submitting') ||
       children.find(f => f.busy && f.mode !== 'blocked' && f.mode !== 'skipped') ||
       children.find(f => ['quiz', 'media', 'document', 'text', 'discussion'].includes(f.mode)) ||
       children.find(f => f.mode === 'awaiting-user-playback') ||
       children.find(f => f.mode === 'blocked');
     if (active) {
-      if (active.mode === 'submitting' && config.autoSubmit) A.confirmSubmit();
       status = active.status; return;
     }
     if (Date.now() - lastAction < 7000) return;
@@ -320,16 +354,18 @@
       chapter.cards.jobDone + (chapter.cards.skippedJobTotal || 0) + (chapter.skippedWorkJobTotal || 0) === chapter.cards.jobTotal;
     const hasTrackedJobs = A.all('.ans-job-icon').length > 0 || children.some(f => f.trackedJobTotal > 0);
     const viewedText = chapter.ready && !hasTrackedJobs && jobTotal === 0 && (untrackedTextViewed || children.some(f => f.untrackedTextViewed));
-    if (complete || currentCardComplete || locallyConfirmed || viewedText) {
+    const viewedDocument = chapter.ready && !hasTrackedJobs && jobTotal === 0 && chapter.untrackedDocumentComplete;
+    if (complete || currentCardComplete || locallyConfirmed || viewedText || viewedDocument || noTaskChapter) {
       // A locally confirmed task may advance within the card strip; chapter
       // changes still require every platform job marker to be complete.
-      const next = A.nextCard() || (complete || viewedText ? A.nextAction(config.nextSelector) : null);
+      const next = A.nextCard() || (complete || viewedText || viewedDocument || noTaskChapter ? A.nextAction(config.nextSelector) : null);
       if (!next) { status = complete ? '当前任务已完成，未发现下一任务入口；请检查是否为课程末尾' : '当前任务已完成，等待章节完成标记'; return; }
       if (!(await alive())) return;
       A.prepareClick(next);
       const before = A.routeSignature(), card = A.text(A.currentCard());
       status = chapter.skippedWorkCount ? '无法作答的练习已跳过，平台未完成标记保留；正在进入下一任务' :
-        skippedJobs ? '讨论已处理或跳过，平台未完成标记保留；正在进入下一任务' : '任务已完成，正在进入下一任务'; lastAction = Date.now();
+        skippedJobs ? '讨论已处理或跳过，平台未完成标记保留；正在进入下一任务' :
+          noTaskChapter ? '当前章节没有任务点，正在进入下一节' : '任务已完成，正在进入下一任务'; lastAction = Date.now();
       await event('next', A.text(next)); A.safeClick(next); navigating = true;
       try {
         let deadline = Date.now() + 12000, confirmed = false;
@@ -362,7 +398,9 @@
         blockedKey = 'navigation'; status = confirmed ? '已确认下一节但页面未切换，请检查网站响应' : '下一任务点击后页面未变化，请手动选择章节'; mode = 'blocked';
       } finally { navigating = false; }
     } else {
-      status = !chapter.ready ? chapter.reason : jobTotal ? `等待平台任务完成标记（${jobDone}/${jobTotal}）` : '未识别到任务完成标记；请在章节内容页运行或配置选择器';
+      status = !chapter.ready ? chapter.reason : jobTotal ? `等待平台任务完成标记（${jobDone}/${jobTotal}）` :
+        chapter.cards?.documentOnly ? '文档预览尚未确认浏览完成；等待阅读器加载或检查网络' :
+          '未识别到任务完成标记；请在章节内容页运行或配置选择器';
     }
   }
   async function readText(reading, config) {
@@ -450,7 +488,7 @@
       if ([...mediaStates.values()].some(entry => entry.active)) resetMedia();
       const pages = A.documentPages();
       if (pages.length) {
-        const signature = location.href + ':' + pages.length + ':' + (pages[0].id || '') + ':' + (pages[0].querySelector('img')?.src || '');
+        const signature = documentKey(pages);
         if (signature !== documentSignature) { documentSignature = signature; documentViewed = false; documentFinish = null; }
         if (!documentViewed) {
           const claim = await send({ type: 'claimTask', key: 'document' });

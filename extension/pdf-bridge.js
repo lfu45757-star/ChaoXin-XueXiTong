@@ -16,7 +16,11 @@
     }
     let url;
     try { url = new URL(viewer.getAttribute('src'), location.href); } catch { return; }
-    if (!allowed(url) || event.origin !== url.origin) return;
+    // The native /screen/file endpoint redirects the exact panView window to
+    // pan-yz. The source window remains the same, but its origin changes.
+    const redirectedViewer = url.origin === location.origin && url.pathname === '/mooc-ans/screen/file' &&
+      event.origin === 'https://pan-yz.chaoxing.com';
+    if (!allowed(url) || (event.origin !== url.origin && !redirectedViewer)) return;
     let attempt = requests.get(event.source);
     if (!attempt || attempt.url !== url.href) {
       // Store the attempt before invoking the callback, including async callbacks.

@@ -19,9 +19,14 @@ function freshReports(id, state) {
 }
 function reportSummary(frames, owner) {
   // A quiet top frame must not hide active work in a nested task document.
-  const rank = r => owner?.frameId === r.frameId ? 7 : r.busy ? 6 : r.mode === 'submitting' ? 5 : ['media', 'document', 'text'].includes(r.mode) ? 4 : r.mode === 'quiz' ? 3 : ['blocked', 'awaiting-user-playback'].includes(r.mode) ? 2 : r.frameId === 0 ? 1 : 0;
-  const selected = [...frames].sort((a, b) => rank(b) - rank(a) || b.at - a.at)[0];
-  return selected ? { last: String(selected.status || '等待页面状态').slice(0, 500), progress: selected.progress || null, updatedAt: selected.at } : {};
+  const rank = r => owner?.frameId === r.frameId ? 7 : r.busy ? 6 : r.mode === 'submitting' ? 5 : ['media', 'document', 'text'].includes(r.mode) ? 4 : r.mode === 'quiz' ? 3 : ['blocked', 'awaiting-user-playback'].includes(r.mode) ? (r.frameId === 0 ? 1 : 2) : r.frameId === 0 ? 1 : 0;
+  // Periodic reports from several blocked exercises arrive in a different
+  // order every tick. Keep the same task visible until its state changes.
+  const selected = [...frames].sort((a, b) => rank(b) - rank(a) || a.frameId - b.frameId)[0];
+  const blockedCount = frames.filter(r => r.frameId !== 0 && r.mode === 'blocked').length;
+  const pendingLabel = selected?.mode === 'blocked' && blockedCount > 1 ? `${blockedCount} 个练习待处理 · ` : '';
+  return selected ? { last: `${pendingLabel}${String(selected.taskTitle || '').slice(0, 80)}${selected.taskTitle ? ' · ' : ''}${String(selected.status || '等待页面状态')}`.slice(0, 500),
+    progress: selected.progress || null, updatedAt: selected.at } : {};
 }
 async function restoreMissingChapterFrame(tabId, state) {
   if (!state.enabled || Number.isInteger(state.parentTab) || !chrome.tabs.reload) return;

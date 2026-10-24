@@ -66,6 +66,13 @@ try {
   assert.ok((await formatted.evaluate(()=>ChaoxingAdapter.parseQuestions()[0].data.text)).includes(code));
   assert.ok((await formatted.evaluate(()=>ChaoxingAdapter.parseQuestions()[0].data.text)).startsWith('普通坓'));
   results.push('没有本地课程字体时仍验证普通文字与Python换行、缩进提取');
+  const englishCloze = await pageWith(`<div class="TiMu" data="2"><div class="Zy_TItle font-cxsecret"><span class="newZy_TItle">【填空题】</span><p>Directions: Fill ten blanks from the word bank.</p><p>Social media allows people to 1) _____ contact with friends.</p></div><ul class="Zy_ulTk"><li><textarea></textarea></li></ul></div>`,null);
+  assert.deepEqual(await englishCloze.evaluate(()=>{const q=ChaoxingAdapter.parseQuestions()[0];return {text:q.data.text,type:q.data.type,blocked:q.hasEncodedFont,slots:q.data.slots};}),
+    {text:'【填空题】\nDirections: Fill ten blanks from the word bank.\nSocial media allows people to 1) _____ contact with friends.',type:'blank',blocked:false,slots:1});
+  await englishCloze.locator('.Zy_TItle p').last().evaluate(node=>node.textContent+=' 坓');
+  assert.equal(await englishCloze.evaluate(()=>ChaoxingAdapter.parseQuestions()[0].hasEncodedFont),true);
+  await englishCloze.close();
+  results.push('英文填空题仅有固定题型标签时不误判特殊字体；正文出现未知汉字仍暂停');
   const custom = (type,handler,aria=true) => `<div class="singleQuesId"><input id="answertype1" type="hidden" value="${type}"><div class="Zy_TItle">${type==='3'?'【判断题】':'【单选题】'}测试</div><ul><li class="before-after" role="radio" ${aria?'aria-checked="true"':''} onclick="${handler}">A、${type==='3'?'正确':'选项一'}</li><li class="before-after" role="radio" ${aria?'aria-checked="false"':''} onclick="${handler}">B、${type==='3'?'错误':'选项二'}</li></ul></div>`;
   const handler="this.parentElement.querySelectorAll('li').forEach(x=>{x.setAttribute('aria-checked','false');x.classList.remove('check_answer_dx');});this.setAttribute('aria-checked','true');this.classList.add('check_answer_dx');";
   for(const type of ['0','3']) {

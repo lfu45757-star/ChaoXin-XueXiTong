@@ -22,6 +22,9 @@ const cardsPath = '/mooc-ans/knowledge/cards';
 const workModulePath = '/ananas/modules/work/index.html';
 const workDocumentPath = '/mooc-ans/work/doHomeWorkNew';
 const workReceiptPath = '/mooc-ans/work/selectWorkQuestionYiPiYue';
+const pdfModulePath = '/ananas/modules/pdf/index.html';
+const pdfViewerUrl = 'https://pan-yz.chaoxing.com/screen/v2/file_fixture';
+const redirectedPdfUrl = origin + '/mooc-ans/screen/file?objectid=fixture&ext=pdf';
 const cardsQuery = '?courseid=fixture&knowledgeid=fixture-chapter';
 const done = '<div class="ans-attach-ct ans-job-finished"><span class="ans-job-icon"></span></div>';
 const completedWorkTask = `<div class="ans-attach-ct ans-job-finished"><span class="ans-job-icon"></span><iframe src="${workModulePath}?workId=fixture"></iframe></div>`;
@@ -29,6 +32,14 @@ const pendingWorkTask = `<div class="ans-attach-ct"><span class="ans-job-icon"><
 const pendingHidden = '<div class="ans-attach-ct" style="display:none"><span class="ans-job-icon"></span><iframe src="/work/pending"></iframe></div>';
 const discussionKey = origin + '/ananas/modules/discuss/index.html?task=fixture';
 const pendingDiscussion = `<div class="ans-attach-ct"><span class="ans-job-icon"></span><iframe src="${discussionKey}"></iframe></div>`;
+const untrackedPdf = `<div class="ans-cc"><div class="ans-attach-ct"><iframe src="${pdfModulePath}?doc=fixture"></iframe></div></div>`;
+const imageOnlyChapter = '<div class="ans-cc"><div id="pageDiv"><img alt="Chapter illustration" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="></div></div>';
+const viewedPdfReports = [
+  { frameId: 92, mode: 'page', busy: false, url: origin + pdfModulePath + '?doc=fixture',
+    pdfViewerUrl, childFrameUrls: [pdfViewerUrl, 'https://pan-yz.chaoxing.com/robot'], jobTotal: 0, jobDone: 0 },
+  { frameId: 93, mode: 'complete', busy: false, url: pdfViewerUrl,
+    untrackedDocumentViewed: true, documentPageCount: 2, jobTotal: 0, jobDone: 0 }
+];
 const oldComplete = { frameId: 91, mode: 'complete', busy: false, status: 'old work complete', url: origin + workReceiptPath + '?knowledgeid=previous-chapter&workAnswerId=old-answer', jobTotal: 1, jobDone: 1, trackedJobTotal: 1, submissionConfirmed: true };
 const skippedWorkReports = [
   { frameId: 92, mode: 'page', busy: false, url: origin + workModulePath + '?workId=fixture',
@@ -37,6 +48,13 @@ const skippedWorkReports = [
     url: origin + workDocumentPath + '?workAnswerId=fixture-answer&knowledgeid=fixture-chapter&courseid=fixture', jobTotal: 0, jobDone: 0 }
 ];
 const specs = [
+  { name: 'loaded image-only chapter without task points advances', html: imageOnlyChapter, injectCards: true, expectedClicks: 1 },
+  { name: 'auxiliary iframe outside image chapter does not invent a task point',
+    html: '<iframe src="about:blank" style="display:none"></iframe>' + imageOnlyChapter,
+    injectCards: true, expectedClicks: 1 },
+  { name: 'empty native cards does not imply a task-free chapter', html: '<div class="ans-cc"><div id="pageDiv"></div></div>', injectCards: true },
+  { name: 'loading image-only native cards does not advance', html: '<div class="loading">Loading</div>' + imageOnlyChapter, injectCards: true },
+  { name: 'image with a hidden pending task does not advance', html: imageOnlyChapter + pendingHidden, injectCards: true },
   { name: 'hidden pending marker and no work-child report block chapter navigation', html: done + pendingHidden, injectCards: true },
   { name: 'expired blocked work report never turns a hidden pending task into completion', html: done + pendingHidden, injectCards: true,
     seeds: [{ frameId: 92, mode: 'blocked', busy: false, status: 'unknown submission', url: origin + '/work/pending', quizKey: 'a'.repeat(64), jobTotal: 0, jobDone: 0, ageMs: 5000 }] },
@@ -67,6 +85,27 @@ const specs = [
   ,{ name: 'completed selected card advances inside tabs while a different card remains pending', html: done, injectCards: true, cardNavigation: true, expectedCardClicks: 1 }
   ,{ name: 'same-chapter report from another card cannot satisfy the current cards URL', html: done, injectCards: false,
     seeds: [{ frameId: 94, mode: 'page', cardsReady: true, url: origin + cardsPath + cardsQuery + '&num=1', jobTotal: 1, jobDone: 1, trackedJobTotal: 1 }] }
+  ,{ name: 'loaded markerless PDF advances after its own viewer reports completed browsing', html: untrackedPdf,
+    injectCards: true, seeds: viewedPdfReports, expectedClicks: 1 }
+  ,{ name: 'redirected pan-yz viewer advances only after its parent bridge verifies the real iframe', html: untrackedPdf,
+    injectCards: true, seeds: [{ ...viewedPdfReports[0], pdfViewerUrl: redirectedPdfUrl },
+      { ...viewedPdfReports[1], pdfParentVerified: true, pdfParentUrl: viewedPdfReports[0].url }], expectedClicks: 1 }
+  ,{ name: 'redirected pan-yz viewer without parent bridge proof stays on this chapter', html: untrackedPdf,
+    injectCards: true, seeds: [{ ...viewedPdfReports[0], pdfViewerUrl: redirectedPdfUrl }, viewedPdfReports[1]] }
+  ,{ name: 'redirected viewer from a different PDF module cannot advance this chapter', html: untrackedPdf,
+    injectCards: true, seeds: [{ ...viewedPdfReports[0], pdfViewerUrl: redirectedPdfUrl },
+      { ...viewedPdfReports[1], pdfParentVerified: true, pdfParentUrl: origin + pdfModulePath + '?doc=other' }] }
+  ,{ name: 'markerless PDF does not advance while the viewer has not finished browsing', html: untrackedPdf,
+    injectCards: true, seeds: viewedPdfReports.slice(0, 1) }
+  ,{ name: 'markerless PDF does not advance for a different viewer URL', html: untrackedPdf,
+    injectCards: true, seeds: [viewedPdfReports[0], { ...viewedPdfReports[1], url: pdfViewerUrl + '_other' }] }
+  ,{ name: 'markerless PDF does not advance when the viewer rendered no pages', html: untrackedPdf,
+    injectCards: true, seeds: [viewedPdfReports[0], { ...viewedPdfReports[1], documentPageCount: 0 }] }
+  ,{ name: 'PDF module completion cannot hide its failed embedded viewer', html: untrackedPdf,
+    injectCards: true, seeds: [{ ...viewedPdfReports[0], untrackedDocumentViewed: true, documentPageCount: 2 }] }
+  ,{ name: 'markerless PDF plus another embedded task cannot advance from the PDF report',
+    html: untrackedPdf.replace('</div></div>', '<iframe src="/ananas/modules/video/index.html"></iframe></div></div>'),
+    injectCards: true, seeds: viewedPdfReports }
   ,{ name: 'explicitly skipped discussion continues to next chapter with original pending marker intact', html: pendingDiscussion, injectCards: true, skippedDiscussion: true, expectedClicks: 1 }
   ,{ name: 'skipped discussion never hides an unfinished different task', html: pendingDiscussion + pendingHidden, injectCards: true, skippedDiscussion: true }
 ];
@@ -85,6 +124,8 @@ async function check(spec) {
       const tabs = spec.cardNavigation ? '<ul class="ans-tabs"><li><a class="ans-tab on">文档</a></li><li><a class="ans-tab" onclick="window.cardClicks++;window.enabled=false">练习</a></li></ul><div class="ans-attach-ct"><span class="ans-job-icon"></span></div>' : '';
       const top = `${tabs}<iframe id="iframe" style="width:900px;height:600px" src="${src}"></iframe><button id="prevNextFocusNext" onclick="window.nextClicks++;window.enabled=false">下一节</button>`;
       const body = url.pathname === cardsPath ? (spec.html || '') :
+        url.pathname === pdfModulePath ? `<iframe id="panView" src="${pdfViewerUrl}"></iframe><iframe id="robot" src="https://pan-yz.chaoxing.com/robot"></iframe>` :
+        url.href === pdfViewerUrl ? '<div class="fileBox"><li>Page one</li><li>Page two</li></div>' :
         url.pathname === workModulePath ? `<iframe id="frame_content" style="width:800px;height:500px" src="${(spec.workCrossOrigin ? 'https://mooc2.chaoxing.com' : origin) + (spec.injectWorkDocument ? workReceiptPath : workDocumentPath)}?workAnswerId=fixture-answer${spec.workCrossOrigin ? '' : '&knowledgeid=fixture-chapter'}&courseid=fixture"></iframe>` :
         url.pathname === workReceiptPath ? '<div class="testTit_status_complete">章节测验已完成</div>' :
         url.pathname === workDocumentPath ? (spec.injectWorkQuestion ?

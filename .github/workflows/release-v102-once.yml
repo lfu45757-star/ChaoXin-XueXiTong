@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 07ec3a01f7feaa50877a2b66b134e402722160b0
+          ref: a9218b4cb9d0913ee4b62ac471a955871d9ff165
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -43,7 +43,7 @@ jobs:
 
           安装：下载 ZIP 解压，Windows 运行 start.cmd，在 Chrome 或 Edge 加载 extension 文件夹。
           升级：停止托管，保留本机 .env 和 data，更新代码并重启服务，在扩展管理页重新加载，再刷新课程页；扩展和服务版本均应为 1.0.2。
-          [完整部署文档](https://github.com/lfu45757-star/ChaoXin-XueXiTong/blob/07ec3a01f7feaa50877a2b66b134e402722160b0/DEPLOYMENT.md)
+          [完整部署文档](https://github.com/lfu45757-star/ChaoXin-XueXiTong/blob/a9218b4cb9d0913ee4b62ac471a955871d9ff165/DEPLOYMENT.md)
 
           安装包从固定源码提交构建，排除 .env、data/、课程截图和 live-* 记录。附带 SHA-256 校验文件；包内 release-files.json 包含逐文件校验信息。
           EOF
@@ -51,5 +51,4 @@ jobs:
             echo "Release exists; refusing replacement."
             exit 1
           fi
-          gh release create v1.0.2 ../chaoxing-agent-1.0.2.zip ../chaoxing-agent-1.0.2.sha256 --repo "$GITHUB_REPOSITORY" --target 07ec3a01f7feaa50877a2b66b134e402722160b0 --title "v1.0.2 · 学习通本地 Agent" --notes-file /tmp/release-notes.md
-
+          gh release create v1.0.2 ../chaoxing-agent-1.0.2.zip ../chaoxing-agent-1.0.2.sha256 --repo "$GITHUB_REPOSITORY" --target a9218b4cb9d0913ee4b62ac471a955871d9ff165 --title "v1.0.2 · 学习通本地 Agent" --notes-file /tmp/release-notes.md

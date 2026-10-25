@@ -29,8 +29,8 @@ function reportSummary(frames, owner) {
   // order every tick. Keep the same task visible until its state changes.
   const selected = [...frames].sort((a, b) => rank(b) - rank(a) || a.frameId - b.frameId)[0];
   const blockedCount = frames.filter(r => r.frameId !== 0 && r.mode === 'blocked').length;
-  const pendingLabel = selected?.mode === 'blocked' && blockedCount > 1 ? `${blockedCount} ����ϰ������ �� ` : '';
-  return selected ? { last: `${pendingLabel}${String(selected.taskTitle || '').slice(0, 80)}${selected.taskTitle ? ' �� ' : ''}${String(selected.status || '�ȴ�ҳ��״̬')}`.slice(0, 500),
+  const pendingLabel = selected?.mode === 'blocked' && blockedCount > 1 ? `${blockedCount} 个练习待处理 · ` : '';
+  return selected ? { last: `${pendingLabel}${String(selected.taskTitle || '').slice(0, 80)}${selected.taskTitle ? ' · ' : ''}${String(selected.status || '等待页面状态')}`.slice(0, 500),
     progress: selected.progress || null, updatedAt: selected.at } : {};
 }
 async function restoreMissingChapterFrame(tabId, state) {
@@ -77,14 +77,14 @@ async function notifyControl(id) {
 }
 function solveContext(value, settings) {
   if (value === undefined) value = {};
-  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('�γ���������Ч');
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('课程上下文无效');
   const context = {};
   for (const key of ['courseTitle', 'chapterTitle']) {
-    if (value[key] !== undefined && (typeof value[key] !== 'string' || value[key].length > 500)) throw new Error('�γ̻��½ڱ������');
+    if (value[key] !== undefined && (typeof value[key] !== 'string' || value[key].length > 500)) throw new Error('课程或章节标题过长');
     context[key] = (value[key] || '').trim();
   }
   context.programmingLanguage = settings.programmingLanguage === 'auto' ? (value.programmingLanguage || 'auto') : settings.programmingLanguage;
-  if (!languages.has(context.programmingLanguage)) throw new Error('���������Ч');
+  if (!languages.has(context.programmingLanguage)) throw new Error('编程语言无效');
   return context;
 }
 async function updateSession(id, update) {
@@ -102,9 +102,9 @@ async function updateSession(id, update) {
 }
 async function api(path, body, tabId, generation) {
   const settings = await config();
-  if (!settings.token) throw new Error('��������չ������д�����������');
+  if (!settings.token) throw new Error('请先在扩展弹窗填写本地配对令牌');
   if (generation !== undefined && (stoppedTabs.has(tabId) || generation !== (generations.get(tabId) || 0)))
-    throw new Error('�й���ֹͣ��ҳ�����л�');
+    throw new Error('托管已停止或页面已切换');
   const controller = new AbortController();
   if (tabId !== undefined) {
     if (!controllers.has(tabId)) controllers.set(tabId, new Set());
@@ -121,9 +121,9 @@ async function api(path, body, tabId, generation) {
     return data;
   } catch (error) {
     if (error.name === 'TypeError' || /failed to fetch|fetch failed/i.test(error.message))
-      throw new Error('�޷����ӱ��ط��� 127.0.0.1:18765�������� start.cmd �ָ���̨��������������������չ�ı�������Ȩ�ޡ�');
+      throw new Error('无法连接本地服务 127.0.0.1:18765，请运行 start.cmd 恢复后台服务；若已启动，请检查扩展的本机访问权限。');
     if (path === '/health' && (error.name === 'TimeoutError' || error.name === 'AbortError'))
-      throw new Error('���ط������ӳ�ʱ��4�룩�������� start.cmd ������');
+      throw new Error('本地服务连接超时（4秒），请运行 start.cmd 检查服务。');
     throw error;
   } finally { controllers.get(tabId)?.delete(controller); }
 }
@@ -134,14 +134,14 @@ function abortTab(id) {
 }
 const discussionReplyPath = /^\/course\/topic\/v3\/bbs\/.*replysList\/?$/i;
 const discussionRevision = 3;
-const recognitionOnlySkip = /^(?:δ�ҵ��ɽ��������ҳ��|�޷�����ʶ���ʦ��Ŀ|�޷�ʶ��(?:��ʦ��Ŀ|Ψһ�ɼ��ظ��༭��|Ψһ�������))/;
+const recognitionOnlySkip = /^(?:未找到可进入的讨论页面|无法完整识别教师题目|无法识别(?:教师题目|唯一可见回复编辑区|唯一发布入口))/;
 function discussionUrl(value, replyOnly = false) {
   let url;
-  try { url = new URL(value); } catch { throw new Error('���۵�ַ��Ч'); }
+  try { url = new URL(value); } catch { throw new Error('讨论地址无效'); }
   if (url.protocol !== 'https:' || !/(^|\.)(chaoxing|xuexitong)\.com$/.test(url.hostname) || url.username || url.password ||
     !(discussionReplyPath.test(url.pathname) || (!replyOnly && (/\/ananas\/modules\/(?:discuss(?:ion)?|bbs|insertbbs)\//i.test(url.pathname) ||
       (/^\/(?:mooc-ans\/)?bbscircle\/chapter\/?$/i.test(url.pathname) && /^\d+$/.test(url.searchParams.get('mtopicid') || ''))))))
-    throw new Error('δʶ��ѧϰͨ����ҳ��ַ');
+    throw new Error('未识别到学习通讨论页地址');
   url.hash = '';
   for (const key of ['t', '_t', 'timestamp', '_']) url.searchParams.delete(key);
   url.searchParams.sort();
@@ -159,9 +159,9 @@ async function closeDiscussionChildren(id) {
 }
 async function endDiscussion(childId, key, status, reason) {
   const child = await session(childId);
-  if (!Number.isInteger(child.parentTab) || child.discussionKey !== key) throw new Error('��Ч�����ۻ�ִ');
+  if (!Number.isInteger(child.parentTab) || child.discussionKey !== key) throw new Error('无效的讨论回执');
   const parent = await session(child.parentTab);
-  if (!parent.enabled || parent.discussions?.[key]?.childTab !== childId) throw new Error('ԭ�γ��й���ֹͣ');
+  if (!parent.enabled || parent.discussions?.[key]?.childTab !== childId) throw new Error('原课程托管已停止');
   if (locks.get(child.parentTab)?.frameId === -childId) locks.delete(child.parentTab);
   await updateSession(child.parentTab, current => ({ ...current, discussions: { ...current.discussions,
     [key]: { ...current.discussions[key], status, reason: String(reason || '').slice(0, 300), revision: discussionRevision, at: Date.now() } } }));
@@ -182,9 +182,9 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
     if (message.type === 'health' && extensionPage) return api('/health');
     if (message.type === 'saveConfig' && extensionPage) {
       const { token, autoSubmit, autoDiscuss = true, confidence, nextSelector, completeSelector, programmingLanguage = 'auto', documentMode = 'fast', autoSeekAudio = true, keepAwake = true } = message.value;
-      if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1) throw new Error('���Ŷȱ���Ϊ 0�C1');
-      if (!languages.has(programmingLanguage)) throw new Error('���������Ч');
-      if (!['fast', 'paced'].includes(documentMode)) throw new Error('�ĵ����ģʽ��Ч');
+      if (!Number.isFinite(confidence) || confidence < 0 || confidence > 1) throw new Error('置信度必须为 0–1');
+      if (!languages.has(programmingLanguage)) throw new Error('编程语言无效');
+      if (!['fast', 'paced'].includes(documentMode)) throw new Error('文档浏览模式无效');
       await chrome.storage.local.set({ config: { token: String(token).trim(), autoSubmit: !!autoSubmit, autoDiscuss: !!autoDiscuss, confidence, nextSelector: String(nextSelector), completeSelector: String(completeSelector), programmingLanguage, documentMode, autoSeekAudio: !!autoSeekAudio, keepAwake: !!keepAwake } });
       await refreshPower();
       return api('/health');
@@ -192,10 +192,10 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
     if (message.type === 'providerConfig' && extensionPage) return api('/config');
     if (message.type === 'saveProviderConfig' && extensionPage) return api('/config', message.value);
     if (message.type === 'resetPending') {
-      if (!extensionPage || message.confirmed !== true || !Number.isInteger(message.tabId)) throw new Error('������չ������ȷȷ�Ϻ�������ǰҳ��¼');
+      if (!extensionPage || message.confirmed !== true || !Number.isInteger(message.tabId)) throw new Error('请在扩展弹窗明确确认后清理当前页记录');
       const latest = freshReports(message.tabId, await session(message.tabId));
       const keys = new Set(latest.map(report => report.quizKey).filter(key => typeof key === 'string' && /^[a-f0-9]{64}$/.test(key)));
-      if (latest.some(report => keys.has(report.quizKey) && (report.busy || report.mode === 'submitting'))) throw new Error('��ǰ��Ŀ����ִ�У���ֹͣ���ȴ�ҳ�������������');
+      if (latest.some(report => keys.has(report.quizKey) && (report.busy || report.mode === 'submitting'))) throw new Error('当前题目仍在执行，请停止并等待页面结束后再清理');
       // Checkpoints are shared local storage; never remove a key another tab is using.
       for (const [otherTab, frames] of reports) if (otherTab !== message.tabId) {
         for (const report of frames.values()) if (Date.now() - report.at < 12000) keys.delete(report.quizKey);
@@ -210,7 +210,7 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       const priorDiscardable = (await session(message.tabId)).autoDiscardableBefore;
       await updateSession(message.tabId, current => {
         const { autoDiscardableBefore, ...rest } = current;
-        return { ...rest, enabled: false, progress: null, last: '������δȷ�ϼ�¼����ˢ�¿γ�ҳ�����¿�ʼ' };
+        return { ...rest, enabled: false, progress: null, last: '已清理未确认记录；请刷新课程页后重新开始' };
       });
       await chrome.alarms.clear(`keep:${message.tabId}`);
       await setTabDiscardable(message.tabId, priorDiscardable);
@@ -220,7 +220,7 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       if (clear.length) await chrome.storage.local.remove(clear);
       let warning;
       try { await api('/event', { type: 'checkpoint_reset', detail: JSON.stringify({ tabId: message.tabId, clearedCount: clear.length }) }); }
-      catch (error) { warning = `ҳ���¼��������ɣ����¼���־��¼ʧ�ܣ�${error.message}`; }
+      catch (error) { warning = `页面记录处理已完成，但事件日志记录失败：${error.message}`; }
       return { clearedCount: clear.length, refreshRequired: true, ...(warning ? { warning } : {}) };
     }
     if (message.type === 'control' && extensionPage) {
@@ -235,7 +235,7 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       const tab = await chrome.tabs.get(message.tabId);
       const url = new URL(tab.url);
       if (message.enabled && (!/(^|\.)(chaoxing|xuexitong)\.com$/.test(url.hostname) || !/\/mycourse\/studentstudy|\/knowledge\/cards|\/mooc-ans\/mooc2\/work\/dowork/.test(url.pathname)))
-        throw new Error('���Ƚ���γ��½�����ҳ����ҵ����ҳ���ٿ�ʼ�й�');
+        throw new Error('请先进入课程章节内容页或作业作答页，再开始托管');
       const course = url.searchParams.get('courseid') || url.searchParams.get('courseId');
       let changed = false, controlGeneration, priorDiscardable;
       const state = await updateSession(tab.id, current => {
@@ -255,7 +255,7 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
         return { enabled: !!message.enabled, started: Date.now(), url: tab.url, course,
           ...(sameCourse ? { discussions: current.discussions || {} } : {}),
           ...(message.enabled && typeof priorDiscardable === 'boolean' ? { autoDiscardableBefore: priorDiscardable } : {}),
-          last: message.enabled ? '�ѿ�ʼ���ȴ�ҳ��ʶ��' : '��ֹͣ' };
+          last: message.enabled ? '已开始，等待页面识别' : '已停止' };
       });
       if (!changed || controlVersions.get(tab.id) !== version) { await refreshPower(); await notifyControl(tab.id); return state; }
       if (message.enabled && generations.get(tab.id) === controlGeneration) stoppedTabs.delete(tab.id);
@@ -270,13 +270,13 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       const current = await session(message.tabId);
       const frames = freshReports(message.tabId, current);
       const tab = current.enabled ? await chrome.tabs.get(message.tabId).catch(() => null) : null;
-      const suspended = tab?.discarded ? 'Chrome �Ѷ����γ̱�ǩҳ�����лظñ�ǩҳ�ָ�' :
-        tab?.frozen ? 'Chrome �Ѷ���γ̱�ǩҳ�����лظñ�ǩҳ�ָ�' : '';
+      const suspended = tab?.discarded ? 'Chrome 已丢弃课程标签页，请切回该标签页恢复' :
+        tab?.frozen ? 'Chrome 已冻结课程标签页，请切回该标签页恢复' : '';
       return { ...current, ...(current.enabled ? reportSummary(frames, locks.get(message.tabId)) : {}), frames,
         stale: !!suspended || current.enabled && !frames.length,
         ...(suspended ? { last: suspended, progress: null } : {}) };
     }
-    if (tabId === undefined) throw new Error('��Ч��ҳ����Ϣ');
+    if (tabId === undefined) throw new Error('无效的页面消息');
     const state = await session(tabId);
     if (message.type === 'state') return { ...state, config: await config() };
     if (message.type === 'report') {
@@ -301,7 +301,7 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       return { ok: true };
     }
     if (message.type === 'reports') return freshReports(tabId, state);
-    if (!state.enabled || stoppedTabs.has(tabId) || requestGeneration !== (generations.get(tabId) || 0)) throw new Error('�й���ֹͣ��ҳ�����л�');
+    if (!state.enabled || stoppedTabs.has(tabId) || requestGeneration !== (generations.get(tabId) || 0)) throw new Error('托管已停止或页面已切换');
     if (message.type === 'discussionStatus') {
       // Retry only older adapter recognition failures. Never erase publication
       // intent, unknown outcomes, closed pages or manually preserved drafts.
@@ -315,7 +315,7 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       for (const [key, record] of Object.entries(state.discussions || {})) {
         if (['opening', 'working'].includes(record.status) && Date.now() - record.at > 300000) {
           await updateSession(tabId, current => ({ ...current, discussions: { ...current.discussions,
-            [key]: { ...record, status: 'skipped', reason: '����ҳ�洦����ʱ���������ұ���δ��ɱ��' } } }));
+            [key]: { ...record, status: 'skipped', reason: '讨论页面处理超时，已跳过且保留未完成标记' } } }));
           if (Number.isInteger(record.childTab)) {
             abortTab(record.childTab); await updateSession(record.childTab, current => ({ ...current, enabled: false }));
             await chrome.tabs.remove?.(record.childTab).catch(() => {});
@@ -325,10 +325,10 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       return (await session(tabId)).discussions || {};
     }
     if (message.type === 'skipDiscussion' || message.type === 'openDiscussion') {
-      if (state.parentTab !== undefined) throw new Error('������ҳ�����ٴ���������');
+      if (state.parentTab !== undefined) throw new Error('讨论子页不能再打开其他讨论');
       const key = discussionUrl(message.key);
       if (message.type === 'skipDiscussion') {
-        const record = { status: 'skipped', reason: String(message.reason || '�޷�ʶ�����ۣ�������').slice(0, 300), revision: discussionRevision, at: Date.now() };
+        const record = { status: 'skipped', reason: String(message.reason || '无法识别讨论，已跳过').slice(0, 300), revision: discussionRevision, at: Date.now() };
         await updateSession(tabId, current => ({ ...current, discussions: { ...current.discussions, [key]: record } }));
         return record;
       }
@@ -344,9 +344,9 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       try {
         child = await chrome.tabs.create({ url: 'about:blank', active: false });
         const latest = await session(tabId);
-        if (!latest.enabled || stoppedTabs.has(tabId)) { await chrome.tabs.remove(child.id); throw new Error('�й���ֹͣ'); }
+        if (!latest.enabled || stoppedTabs.has(tabId)) { await chrome.tabs.remove(child.id); throw new Error('托管已停止'); }
         await updateSession(child.id, () => ({ enabled: true, parentTab: tabId, discussionKey: key, assignedUrl: href,
-          course: state.course, last: '���ڼ��ؽ�ʦ������' }));
+          course: state.course, last: '正在加载教师讨论题' }));
         await updateSession(tabId, current => ({ ...current, discussions: { ...current.discussions,
           [key]: { ...current.discussions[key], childTab: child.id, status: 'working' } } }));
         await chrome.tabs.update(child.id, { url: href }); await refreshPower();
@@ -356,24 +356,24 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
           abortTab(child.id); await updateSession(child.id, current => ({ ...current, enabled: false }));
           await chrome.tabs.remove?.(child.id).catch(() => {});
         }
-        const record = { status: 'skipped', reason: '�޷���������ҳ�棺' + error.message, revision: discussionRevision, at: Date.now() };
+        const record = { status: 'skipped', reason: '无法进入讨论页面：' + error.message, revision: discussionRevision, at: Date.now() };
         await updateSession(tabId, current => ({ ...current, discussions: { ...current.discussions, [key]: record } }));
         return record;
       }
     }
     if (message.type === 'finishDiscussion') {
-      if (!['submitted', 'skipped'].includes(message.status)) throw new Error('���۽����Ч');
-      if (!discussionReplyPath.test(new URL(sender.url || state.assignedUrl || '').pathname)) throw new Error('���ۻ�ִ��Դ��Ч');
+      if (!['submitted', 'skipped'].includes(message.status)) throw new Error('讨论结果无效');
+      if (!discussionReplyPath.test(new URL(sender.url || state.assignedUrl || '').pathname)) throw new Error('讨论回执来源无效');
       if (message.status === 'submitted' && discussionUrl(sender.url || state.assignedUrl, true) !== state.assignedUrl)
-        throw new Error('����ҳ���Ѹı䣬����ȷ��ԭ�ⷢ���ɹ�');
+        throw new Error('讨论页面已改变，不能确认原题发布成功');
       return endDiscussion(tabId, message.key, message.status, message.reason);
     }
     if (message.type === 'discussion') {
       if (!state.discussionKey || message.key !== state.discussionKey || !Number.isInteger(state.parentTab) || !(await session(state.parentTab)).enabled)
-        throw new Error('����δ�󶨵������йܵĿγ�');
-      if (discussionUrl(sender.url || state.assignedUrl, true) !== state.assignedUrl) throw new Error('����ҳ���Ѹı䣬δ���ɻظ�');
+        throw new Error('讨论未绑定到正在托管的课程');
+      if (discussionUrl(sender.url || state.assignedUrl, true) !== state.assignedUrl) throw new Error('讨论页面已改变，未生成回复');
       const settings = await config();
-      if (!settings.autoDiscuss) throw new Error('�Զ������ѹر�');
+      if (!settings.autoDiscuss) throw new Error('自动讨论已关闭');
       return api('/discussion', { topic: message.topic, context: solveContext(message.context, settings) }, tabId, requestGeneration);
     }
     if (message.type === 'claimTask') {
@@ -390,7 +390,7 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
     }
     if (message.type === 'solve') {
       const key = `${tabId}:${message.key}`;
-      if (pending.has(key)) throw new Error('ͬһ����� agent �������ڴ�����');
+      if (pending.has(key)) throw new Error('同一任务的 agent 请求尚在处理中');
       pending.add(key);
       try {
         const settings = await config();
@@ -402,7 +402,7 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       finally { pending.delete(key); }
     }
     if (message.type === 'event') return api('/event', message.value, tabId, requestGeneration);
-    throw new Error('δ֪��Ϣ');
+    throw new Error('未知消息');
   };
   task().then(value => respond({ ok: true, value }), error => respond({ ok: false, error: error.message }));
   return true;
@@ -425,7 +425,7 @@ chrome.tabs.onRemoved.addListener(async id => {
       const record = current.discussions?.[state.discussionKey];
       if (!record || !['opening', 'working'].includes(record.status)) return current;
       return { ...current, discussions: { ...current.discussions, [state.discussionKey]: { ...record,
-        status: 'skipped', reason: '����ҳ���ѹرգ�����δ��ɱ�ǲ�����', at: Date.now() } } };
+        status: 'skipped', reason: '讨论页面已关闭，保留未完成标记并继续', at: Date.now() } } };
     });
   } else await closeDiscussionChildren(id);
   abortTab(id); reports.delete(id); locks.delete(id); missingTopFrames.delete(id);
@@ -438,7 +438,7 @@ chrome.tabs.onUpdated.addListener(async (id, change) => {
   if (!state.enabled) return;
   if (change.status === 'loading') {
     abortTab(id); reports.delete(id); locks.delete(id);
-    await updateSession(id, current => ({ ...current, frames: [], progress: null, updatedAt: null, route: null, last: 'ҳ�����ڼ��أ��йܽ��Զ�����' }));
+    await updateSession(id, current => ({ ...current, frames: [], progress: null, updatedAt: null, route: null, last: '页面正在加载，托管将自动继续' }));
   }
   if (!change.url) return;
   const url = new URL(change.url);
@@ -448,7 +448,7 @@ chrome.tabs.onUpdated.addListener(async (id, change) => {
       if (discussionUrl(change.url, true) !== state.assignedUrl) throw new Error('different topic');
       return;
     }
-    catch { await endDiscussion(id, state.discussionKey, 'skipped', '������ת���޷�ʶ���ҳ�棬������').catch(() => {}); return; }
+    catch { await endDiscussion(id, state.discussionKey, 'skipped', '讨论跳转到无法识别的页面，已跳过').catch(() => {}); return; }
   }
   const course = url.searchParams.get('courseid') || url.searchParams.get('courseId');
   if (!/(^|\.)(chaoxing|xuexitong)\.com$/.test(url.hostname) || !/\/mycourse\/studentstudy|\/knowledge\/cards|\/mooc-ans\/mooc2\/work\/dowork/.test(url.pathname) || (state.course && course && state.course !== course)) {
@@ -456,7 +456,7 @@ chrome.tabs.onUpdated.addListener(async (id, change) => {
     stoppedTabs.add(id);
     await updateSession(id, current => {
       const { autoDiscardableBefore, ...rest } = current;
-      return { ...rest, enabled: false, frames: [], progress: null, last: '���뿪ԭ�γ��½�ҳ���й��Զ�ֹͣ' };
+      return { ...rest, enabled: false, frames: [], progress: null, last: '已离开原课程章节页，托管自动停止' };
     });
     await chrome.alarms.clear(`keep:${id}`);
     await setTabDiscardable(id, state.autoDiscardableBefore);

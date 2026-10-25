@@ -22,7 +22,7 @@ async function scenario(options = {}) {
   await page.route('**/*', route => {
     const path = new URL(route.request().url()).pathname;
     const tag = options.audio ? 'audio' : 'video';
-    const player = `<!doctype html><body><${tag} id="video" style="${options.hidden ? 'display:none' : 'display:block;width:400px;height:200px'}" src="/fixture-media.mp4"></${tag}>` + (options.next ? '<div id="marker" class="ans-attach-ct"><span class="ans-job-icon"></span></div><button id="prevNextFocusNext">��һ��</button>' : '') + '</body>';
+    const player = `<!doctype html><body><${tag} id="video" style="${options.hidden ? 'display:none' : 'display:block;width:400px;height:200px'}" src="/fixture-media.mp4"></${tag}>` + (options.next ? '<div id="marker" class="ans-attach-ct"><span class="ans-job-icon"></span></div><button id="prevNextFocusNext">下一节</button>' : '') + '</body>';
     if (path.endsWith('.mp4')) return route.fulfill({ status: 204, body: '' });
     const body = options.embed && path !== '/player' ? '<!doctype html><body>' + (options.parent || `<div class="ans-attach-ct ${options.done ? 'ans-job-finished' : ''}"><span class="ans-job-icon"></span><iframe src="${origin}/player"></iframe></div>`) + '</body>' : player;
     return route.fulfill({ contentType: 'text/html; charset=utf-8', body });
@@ -144,7 +144,7 @@ try {
     mock.duration = 120;
     document.getElementById('video').dispatchEvent(new Event('loadedmetadata'));
   });
-  await deniedBeforeMetadata.target.waitForFunction(() => mock.seeks.length === 1 && /��Ƶ��������β/.test(reports.at(-1)?.status || ''));
+  await deniedBeforeMetadata.target.waitForFunction(() => mock.seeks.length === 1 && /音频已跳到结尾/.test(reports.at(-1)?.status || ''));
   assert.deepEqual(await deniedBeforeMetadata.target.evaluate(() => [mock.seeks, mock.calls]), [[119.5], 1]);
   await deniedBeforeMetadata.page.close();
   results.push('Audio metadata arriving after autoplay denial still seeks to the end without retrying blocked playback');
@@ -152,11 +152,11 @@ try {
   const backgroundStall = await scenario({ slowTicks: true });
   await backgroundStall.target.waitForFunction(() => mock.calls === 1 && reports.at(-1)?.mode === 'media');
   await backgroundStall.target.evaluate(() => { timeOffset = 35000; contentMessage({ type: 'heartbeat' }); });
-  await backgroundStall.target.waitForFunction(() => mock.calls === 2 && /����ͣ��/.test(reports.at(-1)?.status || ''));
+  await backgroundStall.target.waitForFunction(() => mock.calls === 2 && /进度停滞/.test(reports.at(-1)?.status || ''));
   assert.equal(await backgroundStall.target.evaluate(() => mock.pauses), 1);
   await backgroundStall.target.evaluate(() => { mock.time = 5; contentMessage({ type: 'heartbeat' }); });
   await backgroundStall.target.waitForFunction(() => reports.at(-1)?.progress?.current === 5);
-  assert.match(await backgroundStall.target.evaluate(() => reports.at(-1).status), /����������/);
+  assert.match(await backgroundStall.target.evaluate(() => reports.at(-1).status), /正常播放中/);
   await backgroundStall.page.close();
   results.push('Worker heartbeat detects stalled background playback, restarts once, and publishes advancing progress');
 
@@ -167,8 +167,8 @@ try {
     assert.equal(await sample.target.evaluate(() => mock.calls), 1);
     assert.equal(await sample.target.evaluate(() => lock), null);
     const status = await sample.target.evaluate(() => reports.at(-1).status);
-    assert.doesNotMatch(status, /�����Զ�����/);
-    assert.match(status, name === 'AbortError' ? /���ж�/ : name === 'NotSupportedError' ? /����֧��/ : /����ʧ��/);
+    assert.doesNotMatch(status, /限制自动播放/);
+    assert.match(status, name === 'AbortError' ? /已中断/ : name === 'NotSupportedError' ? /不受支持/ : /播放失败/);
     await sample.page.close();
   }));
   results.push('AbortError, NotSupportedError and other failures show their real category, release ownership, and do not repeatedly call play');

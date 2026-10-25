@@ -50,7 +50,7 @@ test('managed tab is protected from automatic discard and its prior setting is r
   await send({ type: 'control', tabId: 7, enabled: true });
   frozen = true;
   const popup = await send({ type: 'popupState', tabId: 7 });
-  assert.match(popup.value.last, /�Ѷ���/);
+  assert.match(popup.value.last, /已冻结/);
   assert.equal(popup.value.stale, true);
   await send({ type: 'control', tabId: 7, enabled: false });
   assert.deepEqual(updates, [[7, false], [7, true]]);
@@ -98,7 +98,7 @@ test('completed chapter recovers a missing top frame once while incomplete or ac
   assert.deepEqual(reloaded, [7]);
 });
 
-test('��̨�� frame ����ִ������iframe �ֲ�����ȡ���������ͷ�ռ��', async () => {
+test('后台按 frame 串行执行任务，iframe 局部导航取消旧请求并释放占用', async () => {
   let listener, solveStarted=false;
   const local={config:{token:'fixture',confidence:0.85,autoSubmit:true,nextSelector:'',completeSelector:''}}, sessions={};
   const storage=data=>({get:async key=>({[key]:data[key]}),set:async value=>Object.assign(data,value),remove:async key=>{delete data[key];}});
@@ -174,7 +174,7 @@ async function raceFixture({ beforeSet = async () => {}, beforeConfig = async ()
   return { send, sessions, local };
 }
 
-test('ֹͣ���ӳٵĶ��� heartbeat ����ʱ����ֹͣ״̬', async () => {
+test('停止与延迟的顶层 heartbeat 交错时保持停止状态', async () => {
   let hold = false, releaseReport, reportStarted;
   const started = new Promise(resolve => { reportStarted = resolve; });
   const { send, sessions } = await raceFixture({ beforeSet: async value => {
@@ -194,10 +194,10 @@ test('ֹͣ���ӳٵĶ��� heartbeat ����ʱ����ֹͣ״̬'
   assert.equal((await send({ type: 'state' }, 0)).value.enabled, false);
   await send({ type: 'report', value: { route: 'chapter-a', status: 'old heartbeat' } }, 0);
   assert.equal(sessions['tab:7'].enabled, false);
-  assert.equal(sessions['tab:7'].last, '��ֹͣ');
+  assert.equal(sessions['tab:7'].last, '已停止');
 });
 
-test('ֹͣʱ��δ���� controller �� solve ���������÷���', async () => {
+test('停止时尚未创建 controller 的 solve 不会随后调用服务', async () => {
   let hold = false, held = false, releaseConfig, configStarted, solves = 0;
   const started = new Promise(resolve => { configStarted = resolve; });
   const { send } = await raceFixture({
@@ -213,11 +213,11 @@ test('ֹͣʱ��δ���� controller �� solve ��������
   releaseConfig();
   const reply = await solve;
   assert.equal(reply.ok, false);
-  assert.match(reply.error, /ֹͣ|�л�/);
+  assert.match(reply.error, /停止|切换/);
   assert.equal(solves, 0);
 });
 
-test('ֹͣ��ȡ�����ڵȴ��𸴵� solve', async () => {
+test('停止会取消已在等待答复的 solve', async () => {
   let solveStarted;
   const started = new Promise(resolve => { solveStarted = resolve; });
   const { send } = await raceFixture({ solveFetch: async options => {
@@ -230,7 +230,7 @@ test('ֹͣ��ȡ�����ڵȴ��𸴵� solve', async () => {
   assert.equal((await solve).ok, false);
 });
 
-test('ͬһ�γ��ظ��򲢷���ʼ����ȡ����ǰ solve �����������', async () => {
+test('同一课程重复或并发开始不会取消当前 solve 或清除任务锁', async () => {
   let started, finish, aborted = false;
   const began = new Promise(resolve => { started = resolve; });
   const { send, sessions } = await raceFixture({ solveFetch: options => new Promise((resolve, reject) => {
@@ -238,7 +238,7 @@ test('ͬһ�γ��ظ��򲢷���ʼ����ȡ����ǰ solve �
     options.signal.addEventListener('abort', () => { aborted = true; reject(new Error('fixture cancellation')); }, { once: true });
     started();
   }) });
-  await send({ type: 'report', value: { route: 'chapter-a', status: 'agent ���ڴ���', mode: 'page' } }, 0);
+  await send({ type: 'report', value: { route: 'chapter-a', status: 'agent 正在答题', mode: 'page' } }, 0);
   assert.equal((await send({ type: 'claimTask', key: 'quiz' }, 1)).value.ok, true);
   const before = structuredClone(sessions['tab:7']);
   const solve = send({ type: 'solve', key: 'quiz', questions: [] }, 1);
@@ -254,7 +254,7 @@ test('ͬһ�γ��ظ��򲢷���ʼ����ȡ����ǰ solve �
   assert.equal((await send({ type: 'reports' }, 0)).value.length, 1);
 });
 
-test('�ӳٵ��ظ���ʼ����Խ��������ֹͣ��ֹͣ���ȴ�״̬д���ȡ�� solve', async () => {
+test('延迟的重复开始不能越过后来的停止，停止不等待状态写入才取消 solve', async () => {
   let hold = false, reportStarted, releaseReport, solveStarted, aborted = false;
   const reportBegan = new Promise(resolve => { reportStarted = resolve; });
   const solveBegan = new Promise(resolve => { solveStarted = resolve; });
@@ -286,11 +286,11 @@ test('�ӳٵ��ظ���ʼ����Խ��������ֹͣ��
   assert.equal((await send({ type: 'solve', key: 'late', questions: [] }, 1)).ok, false);
 });
 
-test('�γ������Ĵ�����⣬��ʽ���Ը���ҳ���ƶ��ұ���ʱ�ܾ�δ֪����', async () => {
+test('课程上下文传入答题，显式语言覆盖页面推断且保存时拒绝未知语言', async () => {
   let observed;
   const { send } = await raceFixture({ solveFetch: options => { observed = JSON.parse(options.body); return { answers: [] }; } });
   assert.equal((await send({ type: 'config' })).value.programmingLanguage, 'auto');
-  const context = { courseTitle: 'Python �������', chapterTitle: 'ѭ��', programmingLanguage: 'Python' };
+  const context = { courseTitle: 'Python 程序设计', chapterTitle: '循环', programmingLanguage: 'Python' };
   const auto = await send({ type: 'solve', key: 'auto', questions: [], context }, 1);
   assert.equal(auto.ok, true);
   assert.deepEqual(JSON.parse(JSON.stringify(auto.value.context)), context);
@@ -304,7 +304,7 @@ test('�γ������Ĵ�����⣬��ʽ���Ը���ҳ�
   assert.equal((await send({ type: 'saveConfig', value: { ...settings, programmingLanguage: 'Go' } })).ok, false);
 });
 
-test('����ȷȷ�ϵ���չ������������ҳδȷ�� checkpoint�����/���� tab/������Ŀ����', async () => {
+test('仅明确确认的扩展弹窗可清理本页未确认 checkpoint，完成/其它 tab/其它题目不清', async () => {
   const key = letter => letter.repeat(64), name = letter => `quiz:${key(letter)}`;
   const events = [];
   const { send, local, sessions } = await raceFixture({ localValues: {
@@ -329,7 +329,7 @@ test('����ȷȷ�ϵ���չ������������ҳδȷ
   assert.equal(events.filter(event => event.type === 'checkpoint_reset').length, 1);
 });
 
-test('checkpoint ����������־ʧ���Է��سɹ���ˢ����ʾ', async () => {
+test('checkpoint 已清理后日志失败仍返回成功和刷新提示', async () => {
   const key = 'a'.repeat(64), name = `quiz:${key}`;
   const { send, local, sessions } = await raceFixture({
     localValues: { [name]: { stage: 'uncertain' } },
@@ -340,7 +340,7 @@ test('checkpoint ����������־ʧ���Է��سɹ���
   assert.equal(result.ok, true);
   assert.equal(result.value.clearedCount, 1);
   assert.equal(result.value.refreshRequired, true);
-  assert.match(result.value.warning, /�¼���־��¼ʧ��.*fixture event failure/);
+  assert.match(result.value.warning, /事件日志记录失败.*fixture event failure/);
   assert.equal(local[name], undefined);
   assert.equal(sessions['tab:7'].enabled, false);
 });

@@ -2,7 +2,7 @@
   const A = globalThis.ChaoxingAdapter;
   const displayText = value => globalThis.ChaoxingStatusText?.(value) ?? String(value || '').slice(0, 160);
   const topFrame = window === window.top;
-  let working = false, status = 'δ��ʼ', mode = 'idle', lastAction = 0, currentRoute = A.routeSignature();
+  let working = false, status = '未开始', mode = 'idle', lastAction = 0, currentRoute = A.routeSignature();
   let blockedKey = '', skippedQuizKey = '', navigating = false, quizKey = '', filledOnPage = '';
   let documentSignature = '', documentViewed = false, documentFinish = null;
   let textObservation = null, untrackedTextViewed = false;
@@ -12,7 +12,7 @@
   let mediaEpoch = 0, mediaSequence = 0, mediaBusy = false, mediaEnabled = false;
   const send = async message => {
     const reply = await chrome.runtime.sendMessage(message);
-    if (!reply?.ok) throw new Error(reply?.error || '��չ��̨δ��Ӧ');
+    if (!reply?.ok) throw new Error(reply?.error || '扩展后台未响应');
     return reply.value;
   };
   const documentKey = pages => location.href + ':' + pages.length + ':' + (pages[0]?.id || '') + ':' + (pages[0]?.querySelector('img')?.src || '');
@@ -107,7 +107,7 @@
     const item = pending.find(media => !media.ended);
     if (!item) {
       for (const entry of mediaStates.values()) await releaseMedia(entry);
-      mode = 'complete'; status = pending.length ? 'ý���Ѳ��Ž������ȴ�ƽ̨ȷ��' : 'ƽ̨��ȷ��ý��������ɣ��ȴ��½�״̬';
+      mode = 'complete'; status = pending.length ? '媒体已播放结束，等待平台确认' : '平台已确认媒体任务完成，等待章节状态';
       progress = { kind: 'media', phase: pending.length ? 'awaiting-platform' : 'complete', current: items.filter(media => media.ended || A.mediaCompleted(media)).length, total: items.length };
       await advance(config); return;
     }
@@ -117,7 +117,7 @@
       // playback permission, so keep the timeline ready for the user's click.
       seekAudioToEnd(entry, config);
       mode = entry.blocked === 'NotAllowedError' ? 'awaiting-user-playback' : 'blocked';
-      status = entry.message + (entry.seekAttempted && !entry.seekFailed ? '����Ƶ��������β' : '');
+      status = entry.message + (entry.seekAttempted && !entry.seekFailed ? '；音频已跳到结尾' : '');
       await releaseMedia(entry); return;
     }
     const epoch = mediaEpoch;
@@ -125,7 +125,7 @@
     try {
       const claim = await send({ type: 'claimTask', key: entry.key });
       if (!mediaCurrent(entry)) { if (claim.ok) { entry.claimed = true; await releaseMedia(entry); } return; }
-      if (!claim.ok) { item.pause(); mode = 'queued'; status = '�ȴ�ǰһ����������'; return; }
+      if (!claim.ok) { item.pause(); mode = 'queued'; status = '等待前一个任务点完成'; return; }
       entry.claimed = true;
       if (!mediaCurrent(entry) || !(await alive())) { if (!mediaStates.get(item)?.active || mediaStates.get(item) === entry) item.pause(); await releaseMedia(entry); return; }
       entry.blocked = ''; entry.resumed = false;
@@ -134,7 +134,7 @@
       mode = 'media';
       try {
         if (item.error) {
-          const error = new Error('ý�����ʧ��');
+          const error = new Error('媒体加载失败');
           error.name = item.error.code === 4 ? 'NotSupportedError' : item.error.code === 1 ? 'AbortError' : 'MediaError';
           throw error;
         }
@@ -152,17 +152,17 @@
         if (item.paused) await item.play();
         if (!mediaCurrent(entry) || !(await alive())) { if (!mediaStates.get(item)?.active || mediaStates.get(item) === entry) item.pause(); await releaseMedia(entry); return; }
         item.muted = true;
-        status = stalled ? '���Ž���ͣ�ͣ��ѳ��Իָ����ȴ����ȸ���' :
-          `${entry.seekFailed ? '��Ƶ��תʧ�ܣ�' : entry.seekAttempted ? '��Ƶ��������β��' : ''}�������������� ${Math.floor(item.currentTime)} / ${Number.isFinite(item.duration) ? Math.floor(item.duration) : '?'} ��`;
+        status = stalled ? '播放进度停滞，已尝试恢复，等待进度更新' :
+          `${entry.seekFailed ? '音频跳转失败，' : entry.seekAttempted ? '音频已跳到结尾，' : ''}静音正常播放中 ${Math.floor(item.currentTime)} / ${Number.isFinite(item.duration) ? Math.floor(item.duration) : '?'} 秒`;
         progress = { kind: 'media', phase: 'playing', current: Math.floor(item.currentTime), total: Number.isFinite(item.duration) ? Math.floor(item.duration) : null };
       } catch (error) {
         if (!mediaCurrent(entry)) return;
         entry.blocked = error.name || 'MediaError'; entry.resumed = false;
-        entry.message = error.name === 'NotAllowedError' ? '����������Զ����ţ�����һ�β��Ű�ť' :
-          error.name === 'AbortError' ? 'ý�岥�����жϣ����ڲ������лָ�����' :
-          error.name === 'NotSupportedError' ? 'ý���ʽ����֧�֣�������Դ�򲥷���' : `ý�岥��ʧ�ܣ�${error.message || error.name}`;
+        entry.message = error.name === 'NotAllowedError' ? '浏览器限制自动播放，请点击一次播放按钮' :
+          error.name === 'AbortError' ? '媒体播放已中断，请在播放器中恢复播放' :
+          error.name === 'NotSupportedError' ? '媒体格式不受支持，请检查资源或播放器' : `媒体播放失败：${error.message || error.name}`;
         mode = error.name === 'NotAllowedError' ? 'awaiting-user-playback' : 'blocked';
-        status = entry.message + (entry.seekAttempted && !entry.seekFailed ? '����Ƶ��������β' : '');
+        status = entry.message + (entry.seekAttempted && !entry.seekFailed ? '；音频已跳到结尾' : '');
         await releaseMedia(entry);
       }
     } finally { if (epoch === mediaEpoch) mediaBusy = false; }
@@ -189,7 +189,7 @@
       const marker = A.platformWorkCompleted() || A.platformWorkCompleted(await send({ type: 'reports' }));
       const receipt = !marker && A.submissionSuccess();
       if (!marker && !receipt) return false;
-      status = marker ? 'ƽ̨���������ɣ��������Ⲣ����' : 'ƽ̨��ȷ���ύ�ɹ�'; mode = 'complete';
+      status = marker ? '平台任务点已完成，跳过解题并继续' : '平台已确认提交成功'; mode = 'complete';
       progress = { kind: 'quiz', phase: marker ? 'platform-complete' : 'submitted',
         current: parsed.length, total: parsed.length, filled: parsed.length };
       if (receipt) await remember(key, { stage: 'submitted' });
@@ -197,12 +197,12 @@
     };
     if (await finishIfPlatformComplete()) return;
     if (blockedKey === key) {
-      if (skippedQuizKey === key) { mode = 'skipped'; status = '�����޷�������Ч�𰸣���������ƽ̨�Լ�Ϊδ���'; }
+      if (skippedQuizKey === key) { mode = 'skipped'; status = '本题无法给出有效答案，已跳过；平台仍记为未完成'; }
       return;
     }
-    if (old?.stage === 'submitted') { status = '�����������ύ��¼���ȴ�ƽ̨��ɱ��'; mode = 'awaiting-completion'; return; }
+    if (old?.stage === 'submitted') { status = '该任务已有提交记录，等待平台完成标记'; mode = 'awaiting-completion'; return; }
     if (old?.stage === 'submitting' || old?.stage === 'uncertain') {
-      // A fresh platform page explicitly saying "�����" can disprove an old
+      // A fresh platform page explicitly saying "待完成" can disprove an old
       // submission intent. Allow one recovery only after a generous grace
       // period; never infer failure from a stale page or missing marker.
       const answers = old.answers;
@@ -215,31 +215,31 @@
       const freshPending = Number.isFinite(old.at) && performance.timeOrigin > old.at + 1000 &&
         Date.now() - old.at >= 120000 && A.platformWorkPending();
       if (!freshPending || !reusable || recoveryCount >= 1) {
-        status = '�ϴ��ύ�����δȷ�ϣ�����ƽ̨�������ظ��ύ'; mode = 'blocked'; return;
+        status = '上次提交结果尚未确认，请检查平台；不会重复提交'; mode = 'blocked'; return;
       }
       recoveryCount = 1;
       old = { ...old, stage: 'filled', recoveryCount };
       await remember(key, old);
-      status = 'ƽ̨ˢ�º�����ʾ����ɣ��Զ������ύһ��'; await report();
+      status = '平台刷新后仍显示待完成，自动重试提交一次'; await report();
     }
     const blockedQuestion = parsed.find(q => !q.data.text || q.data.type === 'unsupported' || q.hasImages || q.hasEncodedFont);
     if (blockedQuestion) {
-      const reason = !blockedQuestion.data.text ? '���Ϊ��' : blockedQuestion.hasImages ? '����ͼƬ' :
-        blockedQuestion.hasEncodedFont ? '��������δ��������' : '���ͻ����ؼ�δ����';
-      status = `�� ${blockedQuestion.data.id} ��${reason}�����˹����������`; mode = 'blocked'; return;
+      const reason = !blockedQuestion.data.text ? '题干为空' : blockedQuestion.hasImages ? '包含图片' :
+        blockedQuestion.hasEncodedFont ? '特殊字体未完整解码' : '题型或答题控件未适配';
+      status = `第 ${blockedQuestion.data.id} 题${reason}，请人工处理后继续`; mode = 'blocked'; return;
     }
     const reusable = old?.stage === 'filled' && Array.isArray(old.answers) &&
       (old.answers.every(answer => answer.confidence >= config.confidence) ||
         (old.review?.attempted === true && old.review.threshold === config.confidence)) &&
       sameContext(old.context);
     const fillIdentity = key + ':' + JSON.stringify(answerContext);
-    if (reusable && !config.autoSubmit && filledOnPage === fillIdentity) { status = '������д���ȴ��ֶ��ύ'; return; }
+    if (reusable && !config.autoSubmit && filledOnPage === fillIdentity) { status = '答案已填写，等待手动提交'; return; }
     const claim = await send({ type: 'claimTask', key });
-    if (!claim.ok) { status = '��һ��������ڴ��⣬�ȴ����'; return; }
+    if (!claim.ok) { status = '另一任务点正在答题，等待完成'; return; }
     working = true;
     try {
       progress = { kind: 'quiz', phase: 'solving', current: 0, total: parsed.length, filled: 0 };
-      status = `���ڻ�ȡ ${parsed.length} ����ϰ�𰸣��ȴ�����ѯ�� AI �����`; await report();
+      status = `正在获取 ${parsed.length} 道练习答案，等待题库查询和 AI 解答结果`; await report();
       const result = reusable ? { answers: old.answers, sources: old.sources, review: old.review } :
         await send({ type: 'solve', key, context, questions: parsed.map(q => q.data) });
       if (await finishIfPlatformComplete()) return;
@@ -248,7 +248,7 @@
         const state = await send({ type: 'state' });
         if (!state.enabled) return null;
         if (!sameContext(effectiveContext(A.courseContext(), state.config), solutionContext)) {
-          status = '�����ڼ�γ̻����������ѱ仯���ȴ����½��'; mode = 'quiz'; return null;
+          status = '解题期间课程或语言设置已变化，等待重新解答'; mode = 'quiz'; return null;
         }
         return state.config;
       };
@@ -256,7 +256,7 @@
       if (!latestConfig) return;
       if (!Array.isArray(result.answers) || result.answers.length !== parsed.length ||
           result.answers.some(a => !Number.isFinite(a.confidence) || a.confidence <= 0)) {
-        status = '�����޷�������Ч�𰸣���������ƽ̨�Լ�Ϊδ���'; mode = 'skipped';
+        status = '本题无法给出有效答案，已跳过；平台仍记为未完成'; mode = 'skipped';
         skippedQuizKey = key; blockedKey = key;
         progress = { kind: 'quiz', phase: 'skipped', current: 0, total: parsed.length, filled: 0 };
         await event('blocked', status); return;
@@ -266,9 +266,9 @@
         const outcomes = result.review?.outcomes;
         if (result.review?.attempted !== true || result.review.threshold !== latestConfig.confidence ||
             !Array.isArray(outcomes) || lowAnswers.some(answer => !outcomes.some(item => item.id === answer.id))) {
-          status = '�����Ŷȴ���δ��ɸ��ˣ�����ͣ�ύ'; mode = 'blocked'; blockedKey = key; await event('blocked', status); return;
+          status = '低置信度答案尚未完成复核，已暂停提交'; mode = 'blocked'; blockedKey = key; await event('blocked', status); return;
         }
-        status = `�Ѹ��ˣ����� ${lowAnswers.length} �������Ŷ��⣬������д���ύ`; await report();
+        status = `已复核，仍有 ${lowAnswers.length} 道低置信度题，继续填写并提交`; await report();
       }
       // Preflight the whole batch before mutating any question. Then expose
       // each verified DOM update immediately, without claiming submission.
@@ -277,12 +277,12 @@
         if (!(await currentSettings()) || !question.node.isConnected) return;
         const source = result.sources?.find(item => item.id === question.data.id);
         const reviewed = result.review?.outcomes?.find(item => item.id === question.data.id);
-        const sourceLabel = reviewed?.status === 'confirmed' ? 'AI ���κ˶�ͨ��' : reviewed ?
-          'AI ���κ˶�δȷ�ϣ������Ŷ�' : source?.source === 'conflict' ? '����� AI ���г�ͻ' :
-          source?.provider === 'daxuesoutijiang' ? '��ѧ���⽴��AI �Ѻ˶ԣ�' :
-            source?.source === 'question_bank' ? '���ػ��������' : 'AI ��';
+        const sourceLabel = reviewed?.status === 'confirmed' ? 'AI 二次核对通过' : reviewed ?
+          'AI 二次核对未确认，低置信度' : source?.source === 'conflict' ? '题库与 AI 答案有冲突' :
+          source?.provider === 'daxuesoutijiang' ? '大学搜题酱（AI 已核对）' :
+            source?.source === 'question_bank' ? '本地或自有题库' : 'AI 答案';
         progress = { kind: 'quiz', phase: 'filling', current: index + 1, total: parsed.length, questionId: question.data.id, filled: index, source: sourceLabel };
-        status = `������д�� ${index + 1}/${parsed.length} ��`; await report();
+        status = `正在填写第 ${index + 1}/${parsed.length} 题`; await report();
         A.applyAnswers([question], result.answers);
         let badge = question.node.querySelector('[data-cx-agent-answer-progress]');
         if (!badge) {
@@ -290,21 +290,21 @@
           badge.style.cssText = 'font:12px/1.6 system-ui;color:#17603a;padding:5px 8px;margin:6px 0;background:#edf8f0;border-radius:4px';
           question.node.append(badge);
         }
-        badge.textContent = `Agent���� ${index + 1}/${parsed.length} ������д��У�飬�ȴ��ύȷ�� �� ${sourceLabel}`;
+        badge.textContent = `Agent：第 ${index + 1}/${parsed.length} 题已填写并校验，等待提交确认 · ${sourceLabel}`;
         progress = { ...progress, phase: 'verified', filled: index + 1 };
-        status = `����д��У�� ${index + 1}/${parsed.length} ��`; await report();
+        status = `已填写并校验 ${index + 1}/${parsed.length} 题`; await report();
         await new Promise(resolve => setTimeout(resolve, 0));
       }
       A.verifyAnswers(parsed, result.answers);
       filledOnPage = key + ':' + JSON.stringify(solutionContext);
       await remember(key, { stage: 'filled', answers: result.answers, context: solutionContext, recoveryCount,
         ...(result.sources ? { sources: result.sources } : {}), ...(result.review ? { review: result.review } : {}) });
-      if (!latestConfig.autoSubmit) { status = '������д���ȴ��ֶ��ύ'; return; }
+      if (!latestConfig.autoSubmit) { status = '答案已填写，等待手动提交'; return; }
       const submit = A.submitButton();
-      if (!submit) throw new Error('δ�ҵ����õ��ύ��ť');
+      if (!submit) throw new Error('未找到可用的提交按钮');
       const submitConfig = await currentSettings();
       if (!submitConfig) return;
-      if (!submitConfig.autoSubmit) { status = '������д���ȴ��ֶ��ύ'; return; }
+      if (!submitConfig.autoSubmit) { status = '答案已填写，等待手动提交'; return; }
       if (await finishIfPlatformComplete()) return;
       A.prepareClick(submit);
       // Persist intent before clicking, so reloads cannot submit twice.
@@ -312,21 +312,21 @@
       A.safeClick(submit);
       mode = 'submitting';
       progress = { ...progress, phase: 'submitting' };
-      status = '�ѵ���ύ������ȷ��ƽ̨���';
+      status = '已点击提交，正在确认平台结果';
       await report();
       const deadline = Date.now() + 30000;
       while (Date.now() < deadline) {
         if (!(await alive())) return;
         if (A.submissionSuccess()) {
-          await remember(key, { stage: 'submitted' }); status = 'ƽ̨��ȷ���ύ�ɹ�'; mode = 'complete';
+          await remember(key, { stage: 'submitted' }); status = '平台已确认提交成功'; mode = 'complete';
           progress = { ...progress, phase: 'submitted' };
-          for (const badge of A.all('[data-cx-agent-answer-progress]')) badge.textContent = 'Agent������������ƽ̨ȷ���ύ';
+          for (const badge of A.all('[data-cx-agent-answer-progress]')) badge.textContent = 'Agent：本任务已由平台确认提交';
           await event('submitted', key); return;
         }
         if (videoQuiz) {
-          if (A.first(['#spanNotBackPoint', '#spanNot'])) throw new Error('��Ƶ���δͨ�������˹����');
+          if (A.first(['#spanNotBackPoint', '#spanNot'])) throw new Error('视频题答案未通过，请人工检查');
           if (!parsed.some(q => A.visible(q.node))) {
-            await remember(key, { stage: 'submitted' }); status = '��Ƶ�����ύ����������'; mode = 'complete';
+            await remember(key, { stage: 'submitted' }); status = '视频题已提交，继续播放'; mode = 'complete';
             await event('submitted', key); return;
           }
           const next = A.first(['#videoquiz-continue']);
@@ -336,7 +336,7 @@
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
       await remember(key, { stage: 'uncertain', answers: result.answers, context: solutionContext, recoveryCount });
-      throw new Error('�ύ���δȷ�ϣ���ֹͣ�ظ��ύ������ƽ̨');
+      throw new Error('提交结果未确认，已停止重复提交，请检查平台');
     } catch (error) {
       blockedKey = key; status = error.message; mode = 'blocked'; await event('blocked', status);
     } finally {
@@ -358,7 +358,7 @@
     // open. Finish that existing click, but never start a second submission.
     const pendingConfirmation = !markersComplete && !noTaskChapter && children.find(frame =>
       frame.mode === 'submitting' || (frame.mode === 'blocked' &&
-        /�ύ���δȷ��|�ϴ��ύ�����δȷ��/.test(frame.status || '') && /^[a-f0-9]{64}$/.test(frame.quizKey || '')));
+        /提交结果未确认|上次提交结果尚未确认/.test(frame.status || '') && /^[a-f0-9]{64}$/.test(frame.quizKey || '')));
     if (config.autoSubmit && pendingConfirmation) A.confirmSubmit(pendingConfirmation.quizKey || '');
     // A blocked sibling must not hide another task's live confirmation dialog.
     // A platform-complete chapter can outlive an older blocked child report.
@@ -391,13 +391,13 @@
       // A locally confirmed task may advance within the card strip; chapter
       // changes still require every platform job marker to be complete.
       const next = A.nextCard() || (complete || viewedText || viewedDocument || noTaskChapter ? A.nextAction(config.nextSelector) : null);
-      if (!next) { status = complete ? '��ǰ��������ɣ�δ������һ������ڣ������Ƿ�Ϊ�γ�ĩβ' : '��ǰ��������ɣ��ȴ��½���ɱ��'; return; }
+      if (!next) { status = complete ? '当前任务已完成，未发现下一任务入口；请检查是否为课程末尾' : '当前任务已完成，等待章节完成标记'; return; }
       if (!(await alive())) return;
       A.prepareClick(next);
       const before = A.routeSignature(), card = A.text(A.currentCard());
-      status = chapter.skippedWorkCount ? '�޷��������ϰ��������ƽ̨δ��ɱ�Ǳ��������ڽ�����һ����' :
-        skippedJobs ? '�����Ѵ�����������ƽ̨δ��ɱ�Ǳ��������ڽ�����һ����' :
-          noTaskChapter ? '��ǰ�½�û������㣬���ڽ�����һ��' : '��������ɣ����ڽ�����һ����'; lastAction = Date.now();
+      status = chapter.skippedWorkCount ? '无法作答的练习已跳过，平台未完成标记保留；正在进入下一任务' :
+        skippedJobs ? '讨论已处理或跳过，平台未完成标记保留；正在进入下一任务' :
+          noTaskChapter ? '当前章节没有任务点，正在进入下一节' : '任务已完成，正在进入下一任务'; lastAction = Date.now();
       await event('next', A.text(next)); A.safeClick(next); navigating = true;
       try {
         let deadline = Date.now() + 12000, confirmed = false;
@@ -419,31 +419,31 @@
               ['quiz','submitting','media','document','discussion','awaiting-user-playback'].includes(frame.mode) ||
               (frame.mode === 'blocked' && !platformDone));
             if ((!ignored && !currentChapter.skippedWorkCount) || done + ignored !== total || busyFrame || !currentChapter.ready) {
-              status = 'ƽ̨��ʾ����δ������񣬵�ǰ�����������Զ���������������״̬'; mode = 'blocked'; blockedKey = 'navigation'; return;
+              status = '平台提示仍有未完成任务，当前条件不允许自动跳过，请检查任务状态'; mode = 'blocked'; blockedKey = 'navigation'; return;
             }
             if (!(await alive()) || A.routeSignature() !== before) return;
-            status = '����ȷ�Ͻ�����һ�ڣ��������������Ա���δ��ɱ��'; await report();
+            status = '正在确认进入下一节；已跳过的任务仍保留未完成标记'; await report();
             A.safeClick(confirmation); confirmed = true; deadline = Date.now() + 12000;
           }
           await new Promise(resolve => setTimeout(resolve, 250));
         }
-        blockedKey = 'navigation'; status = confirmed ? '��ȷ����һ�ڵ�ҳ��δ�л���������վ��Ӧ' : '��һ��������ҳ��δ�仯�����ֶ�ѡ���½�'; mode = 'blocked';
+        blockedKey = 'navigation'; status = confirmed ? '已确认下一节但页面未切换，请检查网站响应' : '下一任务点击后页面未变化，请手动选择章节'; mode = 'blocked';
       } finally { navigating = false; }
     } else {
-      status = !chapter.ready ? chapter.reason : jobTotal ? `�ȴ�ƽ̨������ɱ�ǣ�${jobDone}/${jobTotal}��` :
-        chapter.cards?.documentOnly ? '�ĵ�Ԥ����δȷ�������ɣ��ȴ��Ķ������ػ�������' :
-          'δʶ��������ɱ�ǣ������½�����ҳ���л�����ѡ����';
+      status = !chapter.ready ? chapter.reason : jobTotal ? `等待平台任务完成标记（${jobDone}/${jobTotal}）` :
+        chapter.cards?.documentOnly ? '文档预览尚未确认浏览完成；等待阅读器加载或检查网络' :
+          '未识别到任务完成标记；请在章节内容页运行或配置选择器';
     }
   }
   async function readText(reading, config) {
     if (textObservation?.key !== reading.key) {
       textObservation = { key: reading.key, stableSince: Date.now() }; untrackedTextViewed = false;
     }
-    if (untrackedTextViewed) { mode = 'complete'; status = '�������������½������'; await advance(config); return; }
-    mode = 'text'; status = '�����½��Ѽ��أ�����ȷ�������ȶ���û��Ƕ������';
+    if (untrackedTextViewed) { mode = 'complete'; status = '无任务点的文字章节已浏览'; await advance(config); return; }
+    mode = 'text'; status = '文字章节已加载，正在确认内容稳定且没有嵌入任务';
     if (Date.now() - textObservation.stableSince < 6000) return;
     const claim = await send({ type: 'claimTask', key: 'text' });
-    if (!claim.ok) { mode = 'queued'; status = '�ȴ�ǰһ����������'; return; }
+    if (!claim.ok) { mode = 'queued'; status = '等待前一个任务点完成'; return; }
     working = true;
     try {
       const bounds = reading.root.getBoundingClientRect();
@@ -455,7 +455,7 @@
       const dwell = Math.max(2000, Math.ceil(8000 / positions.length));
       for (let index = 0; index < positions.length; index++) {
         if (!(await alive()) || A.textReading()?.key !== reading.key) return;
-        mode = 'text'; status = `��������������������½� ${index + 1}/${positions.length}`;
+        mode = 'text'; status = `正在浏览无任务点的文字章节 ${index + 1}/${positions.length}`;
         window.scrollTo({ top: positions[index], behavior: 'instant' });
         const until = Date.now() + dwell;
         while (Date.now() < until) {
@@ -464,7 +464,7 @@
         }
       }
       if (!(await alive()) || A.textReading()?.key !== reading.key) return;
-      untrackedTextViewed = true; mode = 'complete'; status = '�������������½������';
+      untrackedTextViewed = true; mode = 'complete'; status = '无任务点的文字章节已浏览';
     } finally { working = false; await send({ type: 'releaseTask', key: 'text' }).catch(() => {}); }
     if (untrackedTextViewed) await advance(config);
   }
@@ -476,7 +476,7 @@
     const box = document.createElement('div');
     box.style.cssText = 'font:13px/1.6 system-ui;background:#102a43;color:#fff;padding:12px 16px;border-radius:10px;box-shadow:0 3px 16px #0004;max-width:350px;white-space:pre-wrap';
     shadow.append(box); document.documentElement.append(host);
-    setInterval(() => { const next = 'ѧϰͨ���� Agent\n' + displayText(overlayStatus || status); if (box.textContent !== next) box.textContent = next; }, 300);
+    setInterval(() => { const next = '学习通本地 Agent\n' + displayText(overlayStatus || status); if (box.textContent !== next) box.textContent = next; }, 300);
   }
   async function tick() {
     let entered = false;
@@ -485,7 +485,7 @@
       overlayStatus = topFrame && state.enabled ? state.last || '' : '';
       if (!state.enabled) {
         mediaEnabled = false; resetMedia();
-        status = '��ֹͣ������չ������ʼ�й�'; mode = 'idle'; blockedKey = ''; skippedQuizKey = ''; navigating = false;
+        status = '已停止；在扩展弹窗开始托管'; mode = 'idle'; blockedKey = ''; skippedQuizKey = ''; navigating = false;
         textObservation = null; untrackedTextViewed = false; progress = null; return;
       }
       mediaEnabled = true;
@@ -493,12 +493,12 @@
       if ([...mediaStates.values()].some(entry => entry.active && (entry.source !== mediaSource(entry.item) || !entry.item.isConnected))) resetMedia();
       if (tickActive || working || navigating || mediaBusy) return;
       tickActive = true; entered = true;
-      if (A.gate()) { status = 'ҳ����Ҫ��¼����֤���������������'; mode = 'blocked'; return; }
+      if (A.gate()) { status = '页面需要登录或验证，请在浏览器处理'; mode = 'blocked'; return; }
       // The platform can keep rendering old questions after marking their task
       // complete. Check the exact work attachment before parsing or solving.
       if (A.isWorkPage() && (A.platformWorkCompleted() ||
           A.platformWorkCompleted(await send({ type: 'reports' })))) {
-        status = 'ƽ̨���������ɣ��������Ⲣ����'; mode = 'complete'; progress = null; quizKey = '';
+        status = '平台任务点已完成，跳过解题并继续'; mode = 'complete'; progress = null; quizKey = '';
         return;
       }
       const discussion = await globalThis.ChaoxingDiscussion?.handle({ send, state, alive,
@@ -524,7 +524,7 @@
         if (signature !== documentSignature) { documentSignature = signature; documentViewed = false; documentFinish = null; }
         if (!documentViewed) {
           const claim = await send({ type: 'claimTask', key: 'document' });
-          if (!claim.ok) { status = '�ȴ�ǰһ����������'; mode = 'queued'; return; }
+          if (!claim.ok) { status = '等待前一个任务点完成'; mode = 'queued'; return; }
           working = true; mode = 'document';
           try {
             const fast = state.config.documentMode !== 'paced';
@@ -533,22 +533,22 @@
             for (const index of indices) {
               if (!(await alive())) return;
               progress = { kind: 'document', phase: 'scrolling', current: index + 1, total: pages.length };
-              status = fast ? `�ѹ����ĵ�ĩβ��${pages.length} ҳ�����ȴ�ҳ���ȶ�` : `��������ĵ� ${index + 1}/${pages.length} ҳ`;
+              status = fast ? `已滚到文档末尾（${pages.length} 页），等待页面稳定` : `正在浏览文档 ${index + 1}/${pages.length} 页`;
               pages[index].scrollIntoView({ behavior: 'instant', block: fast ? 'end' : 'start' });
               await report();
               const until = Date.now() + (fast ? 600 : 8000);
               while (Date.now() < until) { if (!(await alive()) || A.routeSignature() !== route || !pages[index].isConnected) return; await new Promise(resolve => setTimeout(resolve, 200)); }
             }
-            status = '���ڹ����Ķ������ײ���ȷ��ҳ�沼��';
+            status = '正在滚动阅读器到底部并确认页面布局';
             progress = { kind: 'document', phase: 'settling-bottom', current: pages.length, total: pages.length };
             await report();
-            if (!globalThis.ChaoxingDocumentScroller) throw new Error('�ĵ��������δ���أ������¼�����չ��ˢ�¿γ�ҳ');
+            if (!globalThis.ChaoxingDocumentScroller) throw new Error('文档滚动组件未加载，请重新加载扩展并刷新课程页');
             const bottom = await globalThis.ChaoxingDocumentScroller.settleBottom(pages[pages.length - 1], {
               active: async () => await alive() && A.routeSignature() === route &&
                 A.documentPages().length === pages.length && pages.every(page => page.isConnected)
             });
             if (bottom.status !== 'bottom') {
-              status = bottom.status === 'unstable' ? '�ĵ��ײ��������ڱ仯���ȴ��ȶ������' : '�ĵ������ȡ��';
+              status = bottom.status === 'unstable' ? '文档底部布局仍在变化，等待稳定后继续' : '文档浏览已取消';
               return;
             }
             const currentPages = A.documentPages();
@@ -560,13 +560,13 @@
         }
         mode = 'complete'; progress = { kind: 'document', phase: 'awaiting-platform', current: pages.length, total: pages.length };
         status = documentFinish?.status === 'invoked' ?
-          '�ĵ���������ѵ���վ����ɻص����ȴ�ƽ̨��ɱ��' :
-          '�ĵ��������վ����ɻص������ã��ȴ�ƽ̨���˹�����';
+          '文档已浏览，已调用站点完成回调，等待平台完成标记' :
+          '文档已浏览；站点完成回调不可用，等待平台或人工处理';
         await advance(state.config); return;
       }
       if (reading) { await readText(reading, state.config); return; }
       mode = 'page';
-      if (!topFrame) { status = '�ȴ������״̬'; return; }
+      if (!topFrame) { status = '等待任务点状态'; return; }
       await advance(state.config);
     } catch (error) { status = error.message; mode = 'blocked'; }
     finally { if (entered) tickActive = false; await report(); }

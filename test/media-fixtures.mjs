@@ -22,7 +22,7 @@ async function scenario(options = {}) {
   await page.route('**/*', route => {
     const path = new URL(route.request().url()).pathname;
     const tag = options.audio ? 'audio' : 'video';
-    const player = `<!doctype html><body><${tag} id="video" style="${options.hidden ? 'display:none' : 'display:block;width:400px;height:200px'}" src="/fixture-media.mp4"></${tag}>` + (options.next ? '<div id="marker" class="ans-attach-ct"><span class="ans-job-icon"></span></div><button id="prevNextFocusNext">下一节</button>' : '') + '</body>';
+    const player = `<!doctype html><body><${tag} id="video" style="${options.hidden ? 'display:none' : 'display:block;width:400px;height:200px'}" src="/fixture-media.mp4"></${tag}>` + (options.next ? '<div id="marker" class="ans-attach-ct"><span class="ans-job-icon"></span></div><button id="prevNextFocusNext">��һ��</button>' : '') + '</body>';
     if (path.endsWith('.mp4')) return route.fulfill({ status: 204, body: '' });
     const body = options.embed && path !== '/player' ? '<!doctype html><body>' + (options.parent || `<div class="ans-attach-ct ${options.done ? 'ans-job-finished' : ''}"><span class="ans-job-icon"></span><iframe src="${origin}/player"></iframe></div>`) + '</body>' : player;
     return route.fulfill({ contentType: 'text/html; charset=utf-8', body });
@@ -33,12 +33,14 @@ async function scenario(options = {}) {
   await target.evaluate(options => {
     window.enabled = true; window.allowClaim = true; window.lock = null; window.claims = []; window.releases = []; window.reports = []; window.events = [];
     window.behavior = options.behavior || 'success'; window.timeOffset = 0;
+    window.autoSeekAudio = options.autoSeekAudio !== false;
     const now = Date.now; Date.now = () => now() + timeOffset;
-    const interval = window.setInterval; window.setInterval = (fn, ms, ...args) => interval(fn, ms === 3000 ? 100 : ms === 2500 ? 80 : ms, ...args);
+    const interval = window.setInterval; window.setInterval = (fn, ms, ...args) => interval(fn, options.slowTicks ? ms : ms === 3000 ? 100 : ms === 2500 ? 80 : ms, ...args);
     const item = document.getElementById('video');
-    window.mock = { paused: true, ended: false, time: 0, calls: 0, pauses: 0, mutedBeforePlay: [], resolve: null };
-    for (const [key, getter] of Object.entries({ paused: () => mock.paused, ended: () => mock.ended, currentTime: () => mock.time, duration: () => 120, error: () => null }))
+    window.mock = { paused: true, ended: false, time: 0, duration: options.delayedMetadata ? NaN : 120, seeks: [], calls: 0, pauses: 0, mutedBeforePlay: [], resolve: null };
+    for (const [key, getter] of Object.entries({ paused: () => mock.paused, ended: () => mock.ended, duration: () => mock.duration, readyState: () => 4, error: () => null }))
       Object.defineProperty(item, key, { configurable: true, get: getter });
+    Object.defineProperty(item, 'currentTime', { configurable: true, get: () => mock.time, set: value => { mock.seeks.push(value); mock.time = value; } });
     item.pause = () => { mock.pauses++; mock.paused = true; };
     item.play = () => {
       mock.calls++; mock.mutedBeforePlay.push(item.muted);
@@ -47,8 +49,8 @@ async function scenario(options = {}) {
       mock.paused = false; item.dispatchEvent(new Event('playing')); return Promise.resolve();
     };
     document.getElementById('prevNextFocusNext')?.addEventListener('click', () => { window.nextClicks = (window.nextClicks || 0) + 1; enabled = false; });
-    globalThis.chrome = { storage: { local: { get: async () => ({}), set: async () => {} } }, runtime: { sendMessage: async message => {
-      if (message.type === 'state') return { ok: true, value: { enabled, config: { autoSubmit: true, confidence: .85, programmingLanguage: 'auto', nextSelector: '', completeSelector: '' } } };
+    globalThis.chrome = { storage: { local: { get: async () => ({}), set: async () => {} } }, runtime: { onMessage: { addListener: fn => { window.contentMessage = fn; } }, sendMessage: async message => {
+      if (message.type === 'state') return { ok: true, value: { enabled, config: { autoSubmit: true, autoSeekAudio, confidence: .85, programmingLanguage: 'auto', nextSelector: '', completeSelector: '' } } };
       if (message.type === 'claimTask') { claims.push(message.key); if (!allowClaim) return { ok: true, value: { ok: false } }; lock = message.key; return { ok: true, value: { ok: true } }; }
       if (message.type === 'releaseTask') { releases.push(message.key); if (lock === message.key) lock = null; }
       if (message.type === 'report') reports.push(message.value);
@@ -66,14 +68,28 @@ try {
   const audio = await scenario({ audio: true, hidden: true, audioModule: true });
   await audio.target.waitForFunction(() => mock.calls === 1 && reports.at(-1)?.mode === 'media');
   assert.deepEqual(await audio.target.evaluate(() => mock.mutedBeforePlay), [true]);
+  assert.deepEqual(await audio.target.evaluate(() => mock.seeks), [119.5]);
+  await audio.target.waitForTimeout(200);
+  assert.deepEqual(await audio.target.evaluate(() => mock.seeks), [119.5], 'audio seeks only once per source');
   await audio.target.evaluate(() => { mock.time = 42; });
   await audio.target.waitForFunction(() => reports.at(-1)?.progress?.current === 42);
   await audio.page.close();
+  const disabledSeek = await scenario({ audio: true, hidden: true, audioModule: true, autoSeekAudio: false });
+  await disabledSeek.target.waitForFunction(() => mock.calls === 1);
+  assert.deepEqual(await disabledSeek.target.evaluate(() => mock.seeks), []);
+  await disabledSeek.page.close();
+  const delayedMetadata = await scenario({ audio: true, hidden: true, audioModule: true, delayedMetadata: true });
+  await delayedMetadata.target.waitForFunction(() => mock.calls === 1);
+  assert.deepEqual(await delayedMetadata.target.evaluate(() => mock.seeks), []);
+  await delayedMetadata.target.evaluate(() => { mock.duration = 120; document.getElementById('video').dispatchEvent(new Event('loadedmetadata')); });
+  await delayedMetadata.target.waitForFunction(() => mock.seeks.length === 1);
+  assert.deepEqual(await delayedMetadata.target.evaluate(() => mock.seeks), [119.5]);
+  await delayedMetadata.page.close();
   const incidental = await scenario({ audio: true, hidden: true });
   await incidental.target.waitForTimeout(350);
   assert.equal(await incidental.target.evaluate(() => mock.calls), 0);
   await incidental.page.close();
-  results.push('Hidden HTML audio in the native audio module starts muted and reports progress; hidden incidental page audio is not started');
+  results.push('Task audio seeks once to the final half-second after duration is known, can be disabled, starts muted and reports progress; hidden incidental audio is not started');
 
   const completed = await scenario({ embed: true, done: true });
   await completed.target.waitForFunction(() => reports.at(-1)?.mode === 'complete');
@@ -120,6 +136,30 @@ try {
   results.push('NotAllowedError attempts once, releases lock, and waits across ticks; actual unpaused playing reclaims normally and mute remains enforced');
   await denied.page.close();
 
+  const deniedBeforeMetadata = await scenario({ audio: true, hidden: true, audioModule: true,
+    behavior: 'NotAllowedError', delayedMetadata: true });
+  await deniedBeforeMetadata.target.waitForFunction(() => reports.at(-1)?.mode === 'awaiting-user-playback');
+  assert.deepEqual(await deniedBeforeMetadata.target.evaluate(() => mock.seeks), []);
+  await deniedBeforeMetadata.target.evaluate(() => {
+    mock.duration = 120;
+    document.getElementById('video').dispatchEvent(new Event('loadedmetadata'));
+  });
+  await deniedBeforeMetadata.target.waitForFunction(() => mock.seeks.length === 1 && /��Ƶ��������β/.test(reports.at(-1)?.status || ''));
+  assert.deepEqual(await deniedBeforeMetadata.target.evaluate(() => [mock.seeks, mock.calls]), [[119.5], 1]);
+  await deniedBeforeMetadata.page.close();
+  results.push('Audio metadata arriving after autoplay denial still seeks to the end without retrying blocked playback');
+
+  const backgroundStall = await scenario({ slowTicks: true });
+  await backgroundStall.target.waitForFunction(() => mock.calls === 1 && reports.at(-1)?.mode === 'media');
+  await backgroundStall.target.evaluate(() => { timeOffset = 35000; contentMessage({ type: 'heartbeat' }); });
+  await backgroundStall.target.waitForFunction(() => mock.calls === 2 && /����ͣ��/.test(reports.at(-1)?.status || ''));
+  assert.equal(await backgroundStall.target.evaluate(() => mock.pauses), 1);
+  await backgroundStall.target.evaluate(() => { mock.time = 5; contentMessage({ type: 'heartbeat' }); });
+  await backgroundStall.target.waitForFunction(() => reports.at(-1)?.progress?.current === 5);
+  assert.match(await backgroundStall.target.evaluate(() => reports.at(-1).status), /����������/);
+  await backgroundStall.page.close();
+  results.push('Worker heartbeat detects stalled background playback, restarts once, and publishes advancing progress');
+
   await Promise.all(['AbortError', 'NotSupportedError', 'NetworkError'].map(async name => {
     const sample = await scenario({ behavior: name });
     await sample.target.waitForFunction(() => reports.at(-1)?.mode === 'blocked');
@@ -127,8 +167,8 @@ try {
     assert.equal(await sample.target.evaluate(() => mock.calls), 1);
     assert.equal(await sample.target.evaluate(() => lock), null);
     const status = await sample.target.evaluate(() => reports.at(-1).status);
-    assert.doesNotMatch(status, /限制自动播放/);
-    assert.match(status, name === 'AbortError' ? /已中断/ : name === 'NotSupportedError' ? /不受支持/ : /播放失败/);
+    assert.doesNotMatch(status, /�����Զ�����/);
+    assert.match(status, name === 'AbortError' ? /���ж�/ : name === 'NotSupportedError' ? /����֧��/ : /����ʧ��/);
     await sample.page.close();
   }));
   results.push('AbortError, NotSupportedError and other failures show their real category, release ownership, and do not repeatedly call play');

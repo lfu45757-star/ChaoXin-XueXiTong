@@ -1,11 +1,13 @@
 {
-  "at": "2026-10-23T04:01:37.029Z",
-  "passed": 8,
+  "at": "2026-10-25T14:23:51.406Z",
+  "passed": 10,
   "results": [
-    "Hidden HTML audio in the native audio module starts muted and reports progress; hidden incidental page audio is not started",
+    "Task audio seeks once to the final half-second after duration is known, can be disabled, starts muted and reports progress; hidden incidental audio is not started",
     "A refreshed own completed attachment is skipped despite ended=false; completion cleanup also allows later manual replay without remuting or reclaiming",
     "Completed sibling/outer attachment or unreadable cross-origin parent cannot complete this media; each uncompleted play starts muted",
     "NotAllowedError attempts once, releases lock, and waits across ticks; actual unpaused playing reclaims normally and mute remains enforced",
+    "Audio metadata arriving after autoplay denial still seeks to the end without retrying blocked playback",
+    "Worker heartbeat detects stalled background playback, restarts once, and publishes advancing progress",
     "AbortError, NotSupportedError and other failures show their real category, release ownership, and do not repeatedly call play",
     "Source/route/stop reset waiting state and use new ownership; after stopped cleanup manual playback stays unmuted and unpaused, then a new start can play again",
     "A pending play runs once; stop pauses a late resolved attempt, and its settled cleanup does not take over later manual playback",

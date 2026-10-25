@@ -1,50 +1,51 @@
 <!doctype html>
-<html lang="zh-CN"><meta charset="utf-8"><title>学习通本地 Agent</title>
+<html lang="zh-CN"><meta charset="utf-8"><title>ѧϰͨ���� Agent</title>
 <style>
 body{font:14px/1.6 system-ui;width:340px;padding:16px;margin:0;background:#f6f8fb;color:#16324f}h1{font-size:18px;margin:0 0 12px}label{display:block;margin:10px 0}input[type=text],input[type=password],input[type=number],select{box-sizing:border-box;width:100%;padding:8px;border:1px solid #bcccdc;border-radius:5px}button{padding:8px 12px;border:0;border-radius:5px;margin:4px;background:#186faf;color:white;cursor:pointer}button:disabled{opacity:.45;cursor:default}#stop{background:#526574}#status{white-space:pre-wrap;background:white;padding:10px;border-radius:6px}small{color:#526574}summary{cursor:pointer}
 </style>
-<h1>学习通本地 Agent</h1>
-<div id="status" role="status" aria-live="polite">正在读取状态…</div>
+<h1>ѧϰͨ���� Agent</h1>
+<div id="status" role="status" aria-live="polite">���ڶ�ȡ״̬��</div>
 <progress id="progress" hidden max="1" value="0" style="width:100%"></progress>
 <div id="progressText"></div><small id="sync"></small>
-<div><small id="versions">正在检查版本…</small></div>
+<div><small id="versions">���ڼ��汾��</small></div>
 <div id="connection" role="status" aria-live="polite"></div>
 <div id="discussionSummary"></div>
-<details id="discussionDetails" hidden><summary>查看讨论跳过详情</summary>
+<details id="discussionDetails" hidden><summary>�鿴������������</summary>
 <div id="discussionReasons" style="font-size:12px;color:#526574"></div></details>
 <p id="notice" role="status" aria-live="polite"></p>
-<small>先运行 start.cmd，再打开课程章节内容页或作业作答页。题目会交给本机配置的 agent 解答。</small>
-<label>配对令牌（data/token.txt）<input id="token" type="password" autocomplete="off"></label>
-<label>自动提交最低置信度<input id="confidence" type="number" min="0" max="1" step="0.01"></label>
-<label>编程题语言（题目未指定时）<select id="programmingLanguage"><option value="auto">从课程名称识别</option><option>Python</option><option>C</option><option>C++</option><option>Java</option><option>JavaScript</option></select></label>
-<label><input id="autoSubmit" type="checkbox"> 自动提交已填写的练习</label>
-<label><input id="autoDiscuss" type="checkbox" checked> 根据教师题目生成并发布讨论；无法识别时跳过</label>
-<label>文档浏览<select id="documentMode"><option value="fast">快速滚到末尾</option><option value="paced">逐页停留 8 秒</option></select></label>
-<label><input id="keepAwake" type="checkbox" checked> 托管时防止系统休眠（允许熄屏）</label>
-<details><summary>AI 服务设置</summary>
-<label>优先查题库<select id="questionBank"><option value="local">仅本地题库</option><option value="daxuesoutijiang">本地 + 大学搜题酱</option><option value="generic">本地 + 自有授权接口（.env）</option></select></label>
-<small>搜题酱模式向其官方接口发送当前题干与选项，使用服务端准确标记；低标记、空答案或接口不可用时转 AI。</small>
-<label>解题服务<select id="provider"><option value="codex">本机 Codex</option><option value="deepseek">DeepSeek</option><option value="http">其他兼容 API</option></select></label>
+<small>������ start.cmd���ٴ򿪿γ��½�����ҳ����ҵ����ҳ����Ŀ�ύ���������õ� agent ���</small>
+<label>������ƣ�data/token.txt��<input id="token" type="password" autocomplete="off"></label>
+<label>�Զ��ύ������Ŷ�<input id="confidence" type="number" min="0" max="1" step="0.01"></label>
+<label>��������ԣ���Ŀδָ��ʱ��<select id="programmingLanguage"><option value="auto">�ӿγ�����ʶ��</option><option>Python</option><option>C</option><option>C++</option><option>Java</option><option>JavaScript</option></select></label>
+<label><input id="autoSubmit" type="checkbox"> �Զ��ύ����д����ϰ</label>
+<label><input id="autoDiscuss" type="checkbox" checked> ���ݽ�ʦ��Ŀ���ɲ��������ۣ��޷�ʶ��ʱ����</label>
+<label>�ĵ����<select id="documentMode"><option value="fast">���ٹ���ĩβ</option><option value="paced">��ҳͣ�� 8 ��</option></select></label>
+<label><input id="autoSeekAudio" type="checkbox" checked> ��Ƶ������Զ�������β</label>
+<label><input id="keepAwake" type="checkbox" checked> �й�ʱ��ֹϵͳ���ߣ�����Ϩ����</label>
+<details><summary>AI ��������</summary>
+<label>���Ȳ����<select id="questionBank"><option value="local">���������</option><option value="daxuesoutijiang">���� + ��ѧ���⽴</option><option value="generic">���� + ������Ȩ�ӿڣ�.env��</option></select></label>
+<small>���⽴ģʽ����ٷ��ӿڷ��͵�ǰ�����ѡ�ʹ�÷����׼ȷ��ǣ��ͱ�ǡ��մ𰸻�ӿڲ�����ʱת AI��</small>
+<label>�������<select id="provider"><option value="codex">���� Codex</option><option value="deepseek">DeepSeek</option><option value="http">�������� API</option></select></label>
 <div id="httpSettings" hidden>
-<label>API 地址<input id="baseUrl" type="text" placeholder="https://api.example.com/v1"></label>
-<label>模型 ID<input id="model" type="text" placeholder="填写服务商提供的模型 ID"></label>
-<label>输出格式<select id="responseFormat"><option value="json_schema">JSON Schema</option><option value="json_object">JSON 对象（DeepSeek）</option><option value="text">文本中的 JSON</option></select></label>
+<label>API ��ַ<input id="baseUrl" type="text" placeholder="https://api.example.com/v1"></label>
+<label>ģ�� ID<input id="model" type="text" placeholder="��д�������ṩ��ģ�� ID"></label>
+<label>�����ʽ<select id="responseFormat"><option value="json_schema">JSON Schema</option><option value="json_object">JSON ����DeepSeek��</option><option value="text">�ı��е� JSON</option></select></label>
 <label>API Key<input id="apiKey" type="password" autocomplete="off"></label>
-<label><input id="clearApiKey" type="checkbox"> 清除已保存的 API Key</label>
-<small>题干、选项及课程上下文将发给所选服务。密钥仅存本机；更换服务或地址后需重新填写。</small>
+<label><input id="clearApiKey" type="checkbox"> ����ѱ���� API Key</label>
+<small>��ɡ�ѡ��γ������Ľ�������ѡ������Կ���汾��������������ַ����������д��</small>
 </div>
-<p><small id="keyState">点击读取以查看本地配置。</small></p>
-<button id="loadProvider">读取 AI 设置</button><button id="saveProvider">保存 AI 设置</button>
+<p><small id="keyState">�����ȡ�Բ鿴�������á�</small></p>
+<button id="loadProvider">��ȡ AI ����</button><button id="saveProvider">���� AI ����</button>
 </details>
-<details><summary>页面适配设置</summary>
-<label>下一任务入口 CSS 选择器<input id="nextSelector" type="text" placeholder="留空使用内置适配"></label>
-<label>当前任务完成 CSS 选择器<input id="completeSelector" type="text" placeholder="应仅匹配当前任务已完成状态"></label>
-<small>配置完成标记时应限定当前任务，避免匹配到其他章节。</small>
+<details><summary>ҳ����������</summary>
+<label>��һ������� CSS ѡ����<input id="nextSelector" type="text" placeholder="����ʹ����������"></label>
+<label>��ǰ������� CSS ѡ����<input id="completeSelector" type="text" placeholder="Ӧ��ƥ�䵱ǰ���������״̬"></label>
+<small>������ɱ��ʱӦ�޶���ǰ���񣬱���ƥ�䵽�����½ڡ�</small>
 </details>
-<p><button id="save">保存并测试连接</button><button id="start">开始托管</button><button id="stop">停止</button></p>
-<details><summary>处理未确认的提交</summary>
-<small>先检查当前页面的平台回执。只有确定尚未提交时，才清除未确认记录；已确认提交的记录不会清除。</small>
-<label><input id="confirmUnsubmitted" type="checkbox"> 已确认平台尚未提交</label>
-<button id="resetPending" disabled>清除此页未确认记录</button>
+<p><button id="save">���沢��������</button><button id="start">��ʼ�й�</button><button id="stop">ֹͣ</button></p>
+<details><summary>����δȷ�ϵ��ύ</summary>
+<small>�ȼ�鵱ǰҳ���ƽ̨��ִ��ֻ��ȷ����δ�ύʱ�������δȷ�ϼ�¼����ȷ���ύ�ļ�¼���������</small>
+<label><input id="confirmUnsubmitted" type="checkbox"> ��ȷ��ƽ̨��δ�ύ</label>
+<button id="resetPending" disabled>�����ҳδȷ�ϼ�¼</button>
 </details>
 <script src="status-text.js"></script><script src="popup.js"></script></html>

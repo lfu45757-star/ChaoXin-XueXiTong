@@ -222,9 +222,13 @@
       await remember(key, old);
       status = '平台刷新后仍显示待完成，自动重试提交一次'; await report();
     }
-    const blockedQuestion = parsed.find(q => !q.data.text || q.data.type === 'unsupported' || q.hasImages || q.hasEncodedFont);
+    for (const question of parsed.filter(q => q.hasImages && !q.hasEncodedFont && q.data.type !== 'unsupported')) {
+      try { await A.captureQuestionImages(question, url => send({ type: 'fetchQuestionImage', url })); }
+      catch (error) { question.imageError = error.message; }
+    }
+    const blockedQuestion = parsed.find(q => (!q.data.text && !q.data.images?.length) || q.data.type === 'unsupported' || q.imageError || q.hasEncodedFont);
     if (blockedQuestion) {
-      const reason = !blockedQuestion.data.text ? '题干为空' : blockedQuestion.hasImages ? '包含图片' :
+      const reason = blockedQuestion.imageError ? `图片无法识别（${blockedQuestion.imageError}）` : !blockedQuestion.data.text && !blockedQuestion.data.images?.length ? '题干为空' :
         blockedQuestion.hasEncodedFont ? '特殊字体未完整解码' : '题型或答题控件未适配';
       status = `第 ${blockedQuestion.data.id} 题${reason}，请人工处理后继续`; mode = 'blocked'; return;
     }
@@ -470,13 +474,55 @@
   }
   function panel() {
     if (!topFrame || document.getElementById('cx-agent-panel')) return;
+    const hiddenKey = 'cx-agent-panel-hidden';
+    const positionKey = 'cx-agent-panel-position';
+    try { if (sessionStorage.getItem(hiddenKey) === '1') return; } catch {}
     const host = document.createElement('div'); host.id = 'cx-agent-panel';
     host.style.cssText = 'position:fixed;right:18px;bottom:18px;z-index:2147483647';
     const shadow = host.attachShadow({ mode: 'closed' });
     const box = document.createElement('div');
-    box.style.cssText = 'font:13px/1.6 system-ui;background:#102a43;color:#fff;padding:12px 16px;border-radius:10px;box-shadow:0 3px 16px #0004;max-width:350px;white-space:pre-wrap';
-    shadow.append(box); document.documentElement.append(host);
-    setInterval(() => { const next = '学习通本地 Agent\n' + displayText(overlayStatus || status); if (box.textContent !== next) box.textContent = next; }, 300);
+    box.style.cssText = 'font:13px/1.6 system-ui;background:#102a43;color:#fff;padding:8px 12px 10px;border-radius:10px;box-shadow:0 3px 16px #0004;max-width:350px;min-width:180px;box-sizing:border-box';
+    const bar = document.createElement('div');
+    bar.style.cssText = 'display:flex;align-items:center;gap:8px;cursor:move;user-select:none;touch-action:none';
+    const title = document.createElement('span'); title.textContent = '学习通本地 Agent'; title.style.flex = '1';
+    const close = document.createElement('button'); close.type = 'button'; close.textContent = '×';
+    close.setAttribute('aria-label', '关闭 Agent 浮窗');
+    close.style.cssText = 'font:20px/1 system-ui;border:0;background:transparent;color:#fff;cursor:pointer;padding:0 2px';
+    const details = document.createElement('div'); details.setAttribute('role', 'status');
+    details.style.cssText = 'white-space:pre-wrap;overflow-wrap:anywhere';
+    bar.append(title, close); box.append(bar, details); shadow.append(box); document.documentElement.append(host);
+    const clamp = (value, max) => Math.max(0, Math.min(value, max));
+    const place = (left, top) => {
+      host.style.right = 'auto'; host.style.bottom = 'auto';
+      host.style.left = `${clamp(left, Math.max(0, innerWidth - host.offsetWidth))}px`;
+      host.style.top = `${clamp(top, Math.max(0, innerHeight - host.offsetHeight))}px`;
+    };
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(positionKey) || 'null');
+      if (Number.isFinite(saved?.left) && Number.isFinite(saved?.top)) place(saved.left, saved.top);
+    } catch {}
+    close.addEventListener('click', () => { try { sessionStorage.setItem(hiddenKey, '1'); } catch {} host.remove(); });
+    let drag = null;
+    bar.addEventListener('pointerdown', event => {
+      if (event.target === close || event.button !== 0) return;
+      const rect = host.getBoundingClientRect();
+      drag = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+      bar.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    });
+    bar.addEventListener('pointermove', event => { if (drag) place(event.clientX - drag.x, event.clientY - drag.y); });
+    const finishDrag = () => {
+      if (!drag) return;
+      drag = null;
+      try { sessionStorage.setItem(positionKey, JSON.stringify({ left: parseFloat(host.style.left), top: parseFloat(host.style.top) })); } catch {}
+    };
+    bar.addEventListener('pointerup', finishDrag); bar.addEventListener('pointercancel', finishDrag);
+    addEventListener('resize', () => { if (host.isConnected && host.style.left) place(parseFloat(host.style.left), parseFloat(host.style.top)); });
+    const timer = setInterval(() => {
+      if (!host.isConnected) { clearInterval(timer); return; }
+      const next = displayText(overlayStatus || status);
+      if (details.textContent !== next) details.textContent = next;
+    }, 300);
   }
   async function tick() {
     let entered = false;

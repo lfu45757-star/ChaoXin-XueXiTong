@@ -30,7 +30,7 @@ function render(state) {
   const stale = state.enabled && (state.stale || age > 12000);
   el('status').textContent = (state.enabled ? '托管中 · ' : '') + displayText(state.last || '当前页面尚未开始托管') +
     (stale ? '\n正在等待页面状态；首次安装或更新后请刷新课程页。' : '');
-  el('sync').textContent = state.enabled ? (stale ? '尚未收到新鲜页面报告' : `已自动同步 · ${new Date(state.updatedAt).toLocaleTimeString()}`) : '状态会自动更新，无需重复点击开始';
+  el('sync').textContent = state.enabled ? (stale ? '尚未收到新鲜页面报告' : `已自动同步 · ${new Date(state.updatedAt).toLocaleTimeString()}`) : '';
   const p = state.enabled && !stale ? state.progress : null;
   el('progress').hidden = !p;
   el('progressText').textContent = p ? (p.kind === 'quiz' ? `练习进度：${p.filled ?? p.current ?? 0}/${p.total ?? '?'} 题${p.source ? ' · ' + p.source : ''}` : p.kind === 'document' ? `文档：${p.current ?? 0}/${p.total ?? '?'} 页` : `媒体：${p.current ?? 0}/${p.total ?? '?'} 秒`) : '';
@@ -74,9 +74,11 @@ async function save() {
 }
 function showProvider(settings) {
   el('provider').value = settings.provider || 'codex';
+  el('solveMode').value = settings.solveMode || 'bank_first';
   el('questionBank').value = settings.questionBank || 'local';
   for (const name of ['baseUrl', 'model', 'responseFormat']) el(name).value = settings[name] || (name === 'responseFormat' ? 'json_schema' : '');
   el('apiKey').value = ''; el('clearApiKey').checked = false;
+  el('allowVisionApi').checked = settings.allowVisionApi === true;
   el('keyState').textContent = settings.hasApiKey ? '已在本地保存密钥；留空保留，密钥不会回显。' : '尚未配置密钥。';
   el('httpSettings').hidden = el('provider').value === 'codex';
 }
@@ -85,6 +87,7 @@ el('provider').onchange = () => {
   const provider = el('provider').value;
   el('httpSettings').hidden = provider === 'codex';
   el('apiKey').value = ''; el('clearApiKey').checked = false;
+  el('allowVisionApi').checked = false;
   el('keyState').textContent = '切换服务或地址后需重新填写对应密钥。';
   if (provider === 'deepseek') {
     el('baseUrl').value = 'https://api.deepseek.com';
@@ -96,12 +99,14 @@ el('provider').onchange = () => {
   }
 };
 el('loadProvider').onclick = () => loadProvider().then(() => notice('已读取本地 AI 设置')).catch(e => notice(e.message));
+el('baseUrl').addEventListener('input', () => { el('allowVisionApi').checked = false; });
 el('saveProvider').onclick = async () => {
   el('saveProvider').disabled = true;
   try {
     await save();
-    const value = { provider: el('provider').value, questionBank: el('questionBank').value, baseUrl: el('baseUrl').value.trim(), model: el('model').value.trim(),
-      responseFormat: el('responseFormat').value, apiKey: el('apiKey').value.trim(), clearApiKey: el('clearApiKey').checked };
+    const value = { provider: el('provider').value, solveMode: el('solveMode').value, questionBank: el('questionBank').value, baseUrl: el('baseUrl').value.trim(), model: el('model').value.trim(),
+      responseFormat: el('responseFormat').value, apiKey: el('apiKey').value.trim(), clearApiKey: el('clearApiKey').checked,
+      allowVisionApi: el('provider').value !== 'codex' && el('allowVisionApi').checked };
     const settings = await send({ type: 'saveProviderConfig', value });
     showProvider(settings); notice('AI 设置已保存到本机。实际调用将在下一次解题时验证。');
   } catch (e) { notice(e.message); }

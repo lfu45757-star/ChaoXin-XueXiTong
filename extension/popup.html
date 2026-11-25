@@ -23,6 +23,8 @@ body{font:14px/1.6 system-ui;width:340px;padding:16px;margin:0;background:#f6f8f
 <label><input id="autoSeekAudio" type="checkbox" checked> 音频任务点自动跳到结尾</label>
 <label><input id="keepAwake" type="checkbox" checked> 托管时防止系统休眠（允许熄屏）</label>
 <details><summary>AI 服务设置</summary>
+<label>解题模式<select id="solveMode"><option value="bank_first">题库优先，AI 补充</option><option value="assistant">AI 助手模式（自主解答）</option></select></label>
+<small>AI 助手模式不查题库，直接由所选解题服务逐题推理。图片题默认交给本机 Codex；兼容 API 需另行确认发送图片。</small>
 <label>优先查题库<select id="questionBank"><option value="local">仅本地题库</option><option value="daxuesoutijiang">本地 + 大学搜题酱</option><option value="generic">本地 + 自有授权接口（.env）</option></select></label>
 <small>搜题酱模式向其官方接口发送当前题干与选项，使用服务端准确标记；低标记、空答案或接口不可用时转 AI。</small>
 <label>解题服务<select id="provider"><option value="codex">本机 Codex</option><option value="deepseek">DeepSeek</option><option value="http">其他兼容 API</option></select></label>
@@ -32,6 +34,8 @@ body{font:14px/1.6 system-ui;width:340px;padding:16px;margin:0;background:#f6f8f
 <label>输出格式<select id="responseFormat"><option value="json_schema">JSON Schema</option><option value="json_object">JSON 对象（DeepSeek）</option><option value="text">文本中的 JSON</option></select></label>
 <label>API Key<input id="apiKey" type="password" autocomplete="off"></label>
 <label><input id="clearApiKey" type="checkbox"> 清除已保存的 API Key</label>
+<label><input id="allowVisionApi" type="checkbox"> 允许将题目图片发送到当前 API 地址用于识图</label>
+<small>更换服务或 API 地址后，此授权自动失效。模型须支持图像输入。</small>
 <small>题干、选项及课程上下文将发给所选服务。密钥仅存本机；更换服务或地址后需重新填写。</small>
 </div>
 <p><small id="keyState">点击读取以查看本地配置。</small></p>

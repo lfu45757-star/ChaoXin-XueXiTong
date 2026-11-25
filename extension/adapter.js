@@ -194,6 +194,41 @@
         options: options.map(({ key, text }) => ({ key, text })), slots: fields.length } };
     });
   }
+  async function captureQuestionImages(question, fetchRemote) {
+    const title = first(['.Zy_TItle', '.mark_name', '.question-title', '.stem', '.qtContent', '.tkTopic', '.title'], question.node);
+    const targets = [
+      ...(title ? all('img,canvas', title).map(node => ({ node, label: '题干' })) : []),
+      ...question.options.flatMap(option => all('img,canvas', option.target).map(node => ({ node, label: `选项 ${option.key}` })))
+    ];
+    if (targets.length > 12) throw new Error('题目图片超过 12 张，未自动作答');
+    const images = [];
+    for (const { node, label } of targets) {
+      let dataUrl = '';
+      try {
+        const width = node.naturalWidth || node.width, height = node.naturalHeight || node.height;
+        if (!width || !height) throw new Error('图片尚未加载');
+        const scale = Math.min(1, 1600 / Math.max(width, height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(width * scale)); canvas.height = Math.max(1, Math.round(height * scale));
+        const context = canvas.getContext('2d');
+        if (!context) throw new Error('无法创建图像画布');
+        context.fillStyle = '#fff'; context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(node, 0, 0, canvas.width, canvas.height);
+        dataUrl = canvas.toDataURL('image/png');
+        if (dataUrl.length > 700000) dataUrl = canvas.toDataURL('image/jpeg', 0.76);
+        if (dataUrl.length > 700000) throw new Error('图像体积过大');
+      } catch (error) {
+        const src = node.currentSrc || node.src;
+        if (node.tagName !== 'IMG' || !src || !fetchRemote) throw error;
+        dataUrl = await fetchRemote(src);
+      }
+      if (!/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(dataUrl) || dataUrl.length > 700000)
+        throw new Error('图片格式或大小不支持');
+      images.push({ label, dataUrl });
+    }
+    question.data.images = images;
+    return images;
+  }
   function selected(option) {
     if (option.control && /^(radio|checkbox)$/.test(option.control.type) && typeof option.control.checked === 'boolean') return option.control.checked;
     const markers = [...new Set([option.control, option.target, option.target?.querySelector('.num_option,.num_option_dx')].filter(Boolean))];
@@ -565,6 +600,6 @@
     return JSON.stringify({ href: location.href, mainFrame: document.querySelector('#iframe')?.getAttribute('src') || '',
       card: card ? [...card.parentElement.children].indexOf(card) + ':' + (card.id || '') + ':' + text(card) : '' });
   }
-  globalThis.ChaoxingAdapter = { text, questionText, courseContext, visible, all, first, prepareClick, safeClick, parseQuestions, validateAnswers, applyAnswers, verifyAnswers, submitButton,
+  globalThis.ChaoxingAdapter = { text, questionText, courseContext, visible, all, first, prepareClick, safeClick, parseQuestions, captureQuestionImages, validateAnswers, applyAnswers, verifyAnswers, submitButton,
     submissionSuccess, platformWorkPending, confirmSubmit, gate, jobs, mediaCompleted, mediaElements, frameState, workTitle, isWorkPage: () => workPath.test(location.pathname), platformWorkCompleted, chapterReadiness, completion, nextAction, nextChapterConfirmation, nextCard, currentCard, documentPages, textReading, routeSignature };
 })();

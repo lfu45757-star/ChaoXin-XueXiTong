@@ -34,7 +34,7 @@ const json = (res, status, value) => { res.writeHead(status, { 'Content-Type': '
 const equal = (a, b) => { const x = Buffer.from(a), y = Buffer.from(b); return x.length === y.length && timingSafeEqual(x, y); };
 async function bodyOf(req) {
   let size = 0; const chunks = [];
-  for await (const chunk of req) { size += chunk.length; if (size > 512 * 1024) throw new Error('请求超过 512 KiB'); chunks.push(chunk); }
+  for await (const chunk of req) { size += chunk.length; if (size > 8 * 1024 * 1024) throw new Error('请求超过 8 MiB'); chunks.push(chunk); }
   try { return JSON.parse(Buffer.concat(chunks).toString('utf8')); }
   catch { throw new Error('请求必须为有效 JSON'); }
 }
@@ -108,7 +108,9 @@ export function createAgentServer({ token, solver = solve, logPath = join(root, 
       try {
         // Refresh after asynchronous review reads, which may overlap a config save.
         config = await configStore.read();
-        const options = { solver, lookup, signal: abort.signal, context,
+        if (questions.some(question => question.images?.length) && config.provider !== 'codex' && !config.allowVisionApi)
+          throw new Error('图片题尚未授权发送到当前 AI 接口，请在 AI 服务设置中确认');
+        const options = { solver, lookup: config.solveMode === 'assistant' ? null : lookup, signal: abort.signal, context,
           env: providerEnv(config, env), minMatch: Number(env.QUESTION_BANK_MIN_MATCH || 0.95) };
         const initial = await solveWithLookup(questions, options);
         const answer = threshold === undefined ? initial : await reviewLowConfidence(questions, initial, { solver,

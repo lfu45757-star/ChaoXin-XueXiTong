@@ -301,6 +301,38 @@ chrome.runtime.onMessage.addListener((message, sender, respond) => {
       return { ok: true };
     }
     if (message.type === 'reports') return freshReports(tabId, state);
+    if (message.type === 'fetchQuestionImage') {
+      if (!state.enabled || stoppedTabs.has(tabId) || requestGeneration !== (generations.get(tabId) || 0)) throw new Error('托管已停止或页面已切换');
+      let url;
+      try { url = new URL(message.url); } catch { throw new Error('图片地址无效'); }
+      if (url.protocol !== 'https:' || !/(^|\.)(chaoxing|xuexitong)\.com$/.test(url.hostname) || url.username || url.password)
+        throw new Error('图片不在允许的学习通域名内');
+      // Chaoxing image endpoints commonly redirect to another CDN hostname.
+      // Rejecting every redirect made an otherwise visible image fail with the
+      // unhelpful browser error "Failed to fetch". Follow it, but never return
+      // data from a destination outside the course domains.
+      let response;
+      try {
+        response = await fetch(url, { credentials: 'include', redirect: 'follow',
+          referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(15000) });
+      } catch (error) {
+        throw new Error(error?.name === 'TimeoutError' ? '图片请求超时' : '图片请求失败，请检查学习通图片是否可在当前网络打开');
+      }
+      let destination;
+      try { destination = new URL(response.url); } catch { throw new Error('图片最终地址无效'); }
+      if (destination.protocol !== 'https:' || !/(^|\.)(chaoxing|xuexitong)\.com$/.test(destination.hostname) ||
+          destination.username || destination.password)
+        throw new Error('图片跳转到非学习通域名，未读取');
+      if (!response.ok) throw new Error(`图片加载失败（HTTP ${response.status}）`);
+      const mime = response.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase();
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(mime)) throw new Error('图片格式不支持');
+      if (Number(response.headers.get('content-length')) > 512000) throw new Error('图片超过大小限制');
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      if (bytes.length > 512000) throw new Error('图片超过大小限制');
+      let binary = '';
+      for (let i = 0; i < bytes.length; i += 8192) binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
+      return `data:${mime};base64,${btoa(binary)}`;
+    }
     if (!state.enabled || stoppedTabs.has(tabId) || requestGeneration !== (generations.get(tabId) || 0)) throw new Error('托管已停止或页面已切换');
     if (message.type === 'discussionStatus') {
       // Retry only older adapter recognition failures. Never erase publication
